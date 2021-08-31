@@ -7,18 +7,18 @@
 
     <title>AFrame WebXR Multiple Image Recognition test.</title>
 </head>
-<!-- include A-Frame obviously -->
+
 <script src="https://aframe.io/releases/0.6.0/aframe.min.js"></script>
-<!-- include ar.js for A-Frame -->
+
 <script src="https://jeromeetienne.github.io/AR.js/aframe/build/aframe-ar.js"></script>
 <body style='margin : 0px; overflow: hidden;'>
 <a-scene embedded arjs>
-    <!-- create your content here. just a box for now -->
-    <!-- define a camera which will move according to the marker position -->
+    
+    <!-- define markers and objects -->
     <a-marker type="pattern" url="pattern-self2020closeup.patt">
         <a-box position='0 0.5 0' color="#EF2D5E" material='opacity: 0.5;'></a-box>
-    </a-marker>
-    <!-- define a camera which will move according to the marker position -->
+    </a-marker>   
+  
     <a-marker type="pattern" url="pattern-marker-water-splash.patt">
         <a-box position='0 0.5 0' material='opacity: 0.5;'></a-box>
     </a-marker>
@@ -31,18 +31,12 @@
         <a-sphere position='0 0.5 0' radius=".2" material='opacity: 0.5;' color="red"></a-sphere>
     </a-marker>
 
+  <!-- define a camera -->
     <a-entity camera>
 
     </a-entity>
 
 </a-scene>
 </body>
-
-<!--<a-scene>-->
-<!--   -->
-<!--    <a-plane position="0 0 -4" rotation="-90 0 0" width="4" height="4" color="#7BC8A4"></a-plane>-->
-<!--    <a-sky color="#ECECEC"></a-sky>-->
-<!--</a-scene>-->
-
 
 </html>
