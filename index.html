@@ -5,6 +5,7 @@
 
     <script src="https://aframe.io/releases/0.7.0/aframe.min.js"></script>
     <script src="https://jeromeetienne.github.io/AR.js/aframe/build/aframe-ar.js"></script>
+    
     <title>AFrame WebXR Multiple Image Recognition test.</title>
 </head>
 
@@ -14,10 +15,11 @@
 <body style='margin : 0px; overflow: hidden;'>
 <a-scene embedded arjs>
     
-    <a-assets timeout="300000">
+    <a-assets timeout="600000">
   
-        <a-asset-item id="fauset" src="models/fauset/fauset.gltf"></a-asset-item>
+        <a-asset-item id="fauset" src="models/fauset.gltf"></a-asset-item>
         <a-asset-item id="fosset" src="models/valve/valve.gltf"></a-asset-item>
+        <a-asset-item id="toilet" src="models/toilet.gltf"></a-asset-item>
     </a-assets>
 
     <!-- define markers and objects -->
@@ -34,20 +36,20 @@
     </a-marker>
 
     <a-marker type="pattern" url="pattern-marker-toilet.patt">
-        <a-sphere position='0 0.5 0' material='opacity: 0.5;'></a-sphere>
+        <a-entity id="fosset-instance" position='0 0.5 0' scale="1 1 1" rotation="-90 90 -90">
+            <a-entity position="0 0 0" gltf-model="#toilet"></a-entity>   
+          </a-entity>
     </a-marker>
-
-    <a-marker type="pattern" url="pattern-marker-fauset.patt">
-        <a-entity id="fosset-instance" position='0 0.5 0' scale="1 1 1" rotation="90 90 -90">
-       <!--     <a-entity position="0 0.5 0" gltf-model="#fosset"></a-entity> -->
-            <a-box position='0 0.5 0' material='opacity: 0.5;'></a-box>
+<!--
+    <a-marker type="pattern" url="pattern-squared-star.patt">
+        <a-box position='0 0.5 0' material='opacity: 0.5;'></a-box>
+        <a-entity id="toilet-instance" position='0 0.5 0' scale="1 1 1" rotation="90 90 -90">
+          <a-entity position="0 0 0" gltf-model="#toilet"></a-entity>   
         </a-entity>
     </a-marker>
-
+-->
   <!-- define a camera -->
-    <a-entity camera>
-
-    </a-entity>
+    <a-entity camera></a-entity>
 
 </a-scene>
 </body>
