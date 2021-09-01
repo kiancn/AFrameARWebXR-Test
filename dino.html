@@ -30,6 +30,9 @@
       }
     </style>
   </head>
+<a-assets timeOut= ></a-assets>
+  <a-asset-item id="duck" src="models/duck/Duck.gltf"></a-asset-item>
+</a-assets>
 
   <body style="margin : 0px; overflow: hidden;">
     <!-- minimal loader shown until image descriptors are loaded. Loading may take a while according to the device computational power -->
@@ -48,19 +51,27 @@
       <!-- the path should end with the name without the extension e.g. if file is trex.fset' the path should end with trex -->
       <a-nft
         type="nft"
-        url="<path-to-your-image-descriptors>"
-        smooth="true"
-        smoothCount="10"
-        smoothTolerance=".01"
-        smoothThreshold="5">
+        url="nft/fractal/fractal"
+>
           <!-- as a child of the a-nft entity, you can define the content to show. here's a GLTF model entity -->
           <a-entity
-          gltf-model="https://arjs-cors-proxy.herokuapp.com/https://raw.githack.com/AR-js-org/AR.js/master/aframe/examples/image-tracking/nft/trex/scene.gltf"
-              scale="5 5 5"
+          gltf-model="#duck"
+              scale="0 0.5 0"
               position="100 100 0"
+              color="red"
           >
           </a-entity>
       </a-nft>
+
+      <a-marker type="pattern" url="pattern-marker-water-splash.patt">
+        <a-entity id="duck-instance" position='0 0.5 0' scale="0.5 0.5 0.5" rotation="90 90 -90">
+            <a-entity position="0 0 0" gltf-model="#duck" material="metalness: 1">                
+            </a-entity>         
+        </a-entity>        
+     <!--   <a-box position='0 0.5 0' color="#EF2D5E" material='opacity: 0.5;'></a-box> -->
+    </a-marker>   
+
+
       <!-- static camera that moves according to the device movemenents -->
       <a-entity camera></a-entity>
     </a-scene>
