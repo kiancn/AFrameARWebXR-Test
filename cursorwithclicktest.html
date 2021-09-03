@@ -1,0 +1,50 @@
+<html>
+  <head>
+    <title>Demo a-cursor with click</title>
+    <script src="https://aframe.io/releases/0.7.0/aframe.min.js"></script>
+ 
+ </head>
+  <body>
+    <a-scene>
+      <a-assets>
+      </a-assets>
+ 
+      <a-box color="blue" width="1" height="1" depth="1"
+              position="0 10 0"
+              rotation="45 45 45"
+              scale="1 2.5 1">
+          <a-animation attribute="rotation" begin="click" repeat="3" to="0 360 0"></a-animation>
+      </a-box>
+ 
+      <a-camera position="0 7 5">
+        <a-cursor color="#FF0000" />
+      </a-camera>
+ 
+    </a-scene>
+ 
+    <script type="text/javascript">
+        var box = document.querySelector( 'a-box');
+        box.addEventListener( "mouseenter", function ()
+        {
+          box.setAttribute("scale",
+          {
+            x: 0.5,
+            y: 2,
+            z: 5.9
+          });
+        });
+ 
+        box.addEventListener( "mouseleave", function ()
+        {
+          box.setAttribute("scale",
+          {
+            x: 1,
+            y: 2.5,
+            z: 1
+          });
+        });
+ 
+    </script>
+ 
+  </body>
+</html>
