@@ -11,7 +11,7 @@
 <body>
 
     <script>
-        AFRAME.registerComponent("foo", {
+        AFRAME.registerComponent("duck", {
             init: function () {
                 let tmp = false
                 this.el.addEventListener("click", (e) => {
@@ -22,22 +22,48 @@
             }
         })
 
+        AFRAME.registerComponent("toilet", {
+            init: function () {
+                let tmp = false
+                this.el.addEventListener("click", (e) => {
+                    let scale = tmp ? "1 1 1" : "2 2 2"
+                    this.el.setAttribute("scale", scale)
+                    tmp = !tmp
+                })
+            }
+        })
+
+
+
     </script>
     <a-scene embedded
         arjs='sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3;'
         cursor="rayOrigin: mouse">
+        <a-assets>
+            <a-asset-item id="duck" src="models/duck/Duck.gltf"></a-asset-item>
+            <a-asset-item id="toilet" src="models/toilet.gltf"></a-asset-item>
+
+        </a-assets>
 
         <a-marker type="pattern" url="pattern-marker-toilet.patt">
-            <a-box position="0 0.5 0" color="#4CC3D9" foo></a-box>
+            <a-entity duck id="duck-instance" position='0 0.5 0.4' scale="0.3" rotation="90 90 -90" gltf-model="#duck">
+            </a-entity>
         </a-marker>
 
-        <a-camera>
+        <a-marker type="pattern" url="pattern-self2020closeup.patt">
+            <a-entity toilet id="toilet-instance" position='0 0.5 0.4' scale="1" rotation="90 90 -90" gltf-model="#toilet">
+            </a-entity>
+        </a-marker>
+
+        <a-entity camera look-controls="enabled: false">
             <a-entity cursor="fuse: true; fuseTimeout: 5500" position="0 0 -1"
                 geometry="primitive: ring; radiusInner: 0.001; radiusOuter: 0.003"
                 material="color: black; shader: flat"></a-entity>
-            </a-entity>
-        </a-camera>
+        </a-entity>
+        </a-entity camera>
     </a-scene>
 
 
 </body>
+
+<!--Inspiration: https://jsfiddle.net/6p0r36bL/4/ -->
