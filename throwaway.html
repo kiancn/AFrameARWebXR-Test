@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script src="https://rawgit.com/jeromeetienne/AR.js/master/aframe/build/aframe-ar.min.js"></script>
+</head>
+
+<body>
+
+    <script>
+        AFRAME.registerComponent("foo", {
+            init: function () {
+                let tmp = false
+                this.el.addEventListener("click", (e) => {
+                    let scale = tmp ? "1 1 1" : "2 2 2"
+                    this.el.setAttribute("scale", scale)
+                    tmp = !tmp
+                })
+            }
+        })
+
+    </script>
+    <a-scene embedded
+        arjs='sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3;'
+        cursor="rayOrigin: mouse">
+
+        <a-marker type="pattern" url="pattern-marker-toilet.patt">
+            <a-box position="0 0.5 0" color="#4CC3D9" foo></a-box>
+        </a-marker>
+
+        <a-camera>
+            <a-entity cursor="fuse: true; fuseTimeout: 5500" position="0 0 -1"
+                geometry="primitive: ring; radiusInner: 0.001; radiusOuter: 0.003"
+                material="color: black; shader: flat"></a-entity>
+            </a-entity>
+        </a-camera>
+    </a-scene>
+
+
+</body>

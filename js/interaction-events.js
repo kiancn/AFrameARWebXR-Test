@@ -17,6 +17,7 @@ AFRAME.registerComponent('marker-click-handler-duck', {
             const intersectedElement = ev && ev.detail && ev.detail.intersectedEl;
             console.log(intersectedElement)
             if (aEntity && intersectedElement === aEntity) {
+                console.log("Free click registered on marker-splash")
 
                 // this scaling is just a random effect to test interactivity
 
@@ -41,7 +42,7 @@ AFRAME.registerComponent('marker-click-handler-splash', {
         console.log("initializing SPALSH/FAUSET marker click handler!")
 
         marker.addEventListener('click', function (ev, target) {
-          
+          console.log("Free click registered on marker-splash")
 
             const intersectedElement = ev && ev.detail && ev.detail.intersectedEl;
             console.log(intersectedElement)

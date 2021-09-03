@@ -5,11 +5,10 @@
 
         <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
         <script src="https://rawgit.com/jeromeetienne/AR.js/master/aframe/build/aframe-ar.min.js"></script>
-  <!--      <script src="https://rawgit.com/donmccurdy/aframe-extras/master/dist/aframe-extras.loaders.min.js"></script> -->
+        <script src="https://rawgit.com/donmccurdy/aframe-extras/master/dist/aframe-extras.loaders.min.js"></script>
 
         <title>AFrame WebXR Multiple Image Recognition test.</title>
     </head>
-
 
     <body style='margin : 0px; overflow: hidden;'>
 
@@ -26,17 +25,22 @@
             });
         </script>
 
-        <a-scene embedded arjs='sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3;'>
+        <a-scene embedded arjs='sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3;'
+        cursor="rayOrigin: mouse">
 
             <a-assets timeout="600000">
-                <a-asset-item id="fauset" src="models/fauset_test.gltf"></a-asset-item>
+                <a-asset-item id="duck" src="models/duck.gltf"></a-asset-item>
+                <a-asset-item id="toilet" src="models/toilet.gltf"></a-asset-item>
             </a-assets>
 
-            <a-marker type="pattern" url="pattern-marker-water-splash.patt" id="marker-splash">
+            <a-marker type="pattern" url="pattern-marker-toilet.patt" id="marker-splash">
                 <a-entity id="fauset-instance" class="collidable" position='0 0.5 0.4' scale="2 2 2" rotation="0 90 -90" gltf-model="#fauset"></a-entity>
             </a-marker>
 
-            <a-cursor color="white"></a-cursor>
+            <a-marker type="pattern" url="pattern-self2020closeup.patt" id="marker-selfie">
+                <a-entity id="duck-instance" class="collidable" position="0 0.5 0.4"  rotation="0 90 -90" gltf-model="#duck"></a-entity>
+            </a-marker>
+
 
             <!-- define a camera -->
             <a-entity camera collider-check>
