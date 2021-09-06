@@ -1,137 +1,137 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <head>
 
-    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
-    <script src="https://rawgit.com/jeromeetienne/AR.js/master/aframe/build/aframe-ar.min.js"></script>
-    <script
-        src="https://rawgit.com/mayognaise/aframe-mouse-cursor-component/master/dist/aframe-mouse-cursor-component.min.js"></script>
+        <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+        <script src="https://rawgit.com/jeromeetienne/AR.js/master/aframe/build/aframe-ar.min.js"></script>
+        <script src="https://rawgit.com/mayognaise/aframe-mouse-cursor-component/master/dist/aframe-mouse-cursor-component.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.0.0/dist/aframe-extras.min.js"></script>
 
-    <style>
-       .mainUI {
-            border: 0px solid pink;
-            position: fixed;
-            top: 0px;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-            pointer-events: none;
-            /* allow click-through in transparent areas */
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+        <style>
 
-        .regionUI {
-            border: 0px solid yellow;
-            position: absolute;
-            display: flex;
-            flex-direction: row;
-            pointer-events: none;
-        }
+            .bottombutton {
+                position: absolute;
+                width: 250px;
+                height: 50px;
+                bottom: 50px;
+                right: 25%;
+                margin-left: -150px;
 
-        .buttonUI {
-            border: 0px solid lime;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            pointer-events: auto;
-            filter: drop-shadow(0px 0px 20px white);
-        }
-    </style>
-    </style>
-
-</head>
-
-<body id="body">
-    <script>
-        // registering components in AFrame is done like this; the 1st argument string defines a tag,
-        // which can then be declared directly in the html
-        AFRAME.registerComponent("duck", {
-            init: function () {
-                let tmp = false
-                this.el.addEventListener("click", (e) => {
-                    let scale = tmp ? "0.5 0.5 0.5" : "1 1 1"
-                    this.el.setAttribute("scale", scale)
-                    tmp = !tmp
-                })
-
-            },
-        })
-
-        AFRAME.registerComponent("toilet", {
-            init: function () {
-                let tmp = false
-                this.el.addEventListener("click", (e) => {
-                    let scale = tmp ? "1 1 1" : "2 2 2"
-                    this.el.setAttribute("scale", scale)
-                    tmp = !tmp
-                })
             }
-        })
-    </script>
+        </style>
+        <script>
+            // registering components in AFrame is done like this; the 1st argument string defines a tag,
+            // which can then be declared directly in the html
 
-<div class="mainUI">
-    <div id="duckbuttondiv" style='visibility: hidden;' class="regionUI">
-        <button class="buttonUI" onclick="console.log('Button click registered!')">
-            DUCK!
-        </button>
-    </div>
-</div>
-    <a-scene embedded
-        arjs='sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3;'
-        cursor="rayOrigin: mouse" id="scene">
-        <a-assets>
-            <a-asset-item id="duck" src="models/duck/Duck.gltf"></a-asset-item>
-            <a-asset-item id="toilet" src="models/toilet.gltf"></a-asset-item>
+            var duckRef
+            var toiletRef
 
-        </a-assets>
+            AFRAME.registerComponent("duck", {
+                init: function () {
+                    duckRef = this.el
 
-        <a-marker type="pattern" url="pattern-marker-toilet.patt" id="duckmarker">
-            <a-entity duck id="duck-instance" position='0 0.5 0.4' scale="0.5 0.5 0.5" rotation="90 90 -90"
-                gltf-model="#duck">
-            </a-entity>
-        </a-marker>
+                    let tmp = false
+                    this.el.addEventListener("click", (e) => {
+                        let scale = tmp ? "0.2 0.2 0.2" : "0.51 0.51 0.51"
+                        this.el.setAttribute("scale", scale)
+                        tmp = ! tmp
+                    })
 
-        <a-marker type="pattern" url="pattern-self2020closeup.patt">
-            <a-entity toilet id="toilet-instance" position='0 0.5 0.4' scale="1" rotation="90 90 -90"
-                gltf-model="#toilet">
-            </a-entity>
-        </a-marker>
+                }
+            })
 
-        <a-entity cursor="fuse: true; fuseTimeout: 550000000" position="0 0 -1"
-            geometry="primitive: ring; radiusInner: 0.1; radiusOuter: 0.103" material="color: #24cc8b; shader: flat">
-        </a-entity>
+            AFRAME.registerComponent("toilet-animation", {
+                init: function () {
+                    toiletRef = this.el
 
-        <a-entity camera look-controls="enabled: false">
-        </a-entity>
+                    let tmp = false
+                    this.el.addEventListener("click", (e) => {
+                        let scale = tmp ? "1 1 1" : "2 2 2"
+                        this.el.setAttribute("scale", scale)
+                        tmp = ! tmp
+                    })
+                }
+            })
+        </script>
 
-    </a-scene>
+    </head>
 
-    <script>
-        // this portion of js is here, because despite the instructions from the AFrame documentation,
-        // this gettting of the element will not work unless id of the element requested has been defined.
+    <body id="body" style="overflow: hidden;">
 
-        duckmarker = document.getElementById("duckmarker")
+        <div id="buttondiv" class="bottombutton" style="visibility: hidden;z-index: 5;">
+            <button class="buttonUI" onclick="changeAnimationState();console.log('BANG')">
+                DUCK!
+            </button>
+        </div>
 
-        console.log(duckmarker)
+        <a-scene embedded arjs='sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3;' cursor="rayOrigin: mouse" id="scene">
+            <a-assets timeout="60000">
+                <a-asset-item id="toilet-anim" response-type="arraybuffer" src="models/toilet_anim.gltf"></a-asset-item>
+                <a-asset-item id="duck" src="models/duck/Duck.gltf"></a-asset-item>
+            </a-assets>
 
-        duckButtonDiv = document.getElementById("duckbuttondiv")
-        // markerFound and markerLost events are triggered on registering / losing tracking of the marker
-        duckmarker.addEventListener("markerFound", function () {
-            duckButtonDiv.style.visibility = "visible";
-            console.log("Duck Found!")
-        })
+            <a-marker type="pattern" url="pattern-marker-toilet.patt" id="toiletmarker">
+                <a-entity toilet id="toilet-animation" position='0 0 0' position='0 0.5 0' scale="1 1 1" rotation="-90 90 -90">
+                    <a-entity gltf-model="#toilet-anim" animation-mixer="clip: Flush"></a-entity>
+                </a-entity>
+            </a-marker>
 
-        duckmarker.addEventListener("markerLost", function () {
-            duckButtonDiv.style.visibility = "hidden";
-            console.log("Duck Lost!")
-        })
-    </script>
+            <a-marker type="pattern" url="pattern-marker-water-splash.patt">
+                <a-entity duck id="duck-instance" position='0 0.5 0.4' rotation="90 90 -90" scale="0.2 0.2 0.2" gltf-model="#duck"></a-entity>
+            </a-marker>
 
-</body>
+            <a-entity cursor="fuse: true; fuseTimeout: 550000000" position="0 0 -1" geometry="primitive: ring; radiusInner: 0.1; radiusOuter: 0.103" material="color: #24cc8b; shader: flat"></a-entity>
 
-<!--Inspiration: https://jsfiddle.net/6p0r36bL/4/ -->
-<!-- For the overlayed button, this has been inspiration -->
+            <a-entity camera look-controls="enabled: false"></a-entity>
+
+        </a-scene>
+
+        <script>
+            // this portion of js is here, because despite the instructions from the AFrame documentation,
+            // this gettting of the element will not work unless id of the element requested has been defined.
+
+            toiletRef = document.getElementById("toiletmarker")
+
+            console.log(toiletRef)
+
+            duckButtonDiv = document.getElementById("buttondiv")
+            // markerFound and markerLost events are triggered on registering / losing tracking of the marker
+            toiletRef.addEventListener("markerFound", function () {
+                duckButtonDiv.style.visibility = "visible";
+                console.log("Toilet Found!")
+            })
+
+            toiletRef.addEventListener("markerLost", function () {
+                duckButtonDiv.style.visibility = "hidden";
+                console.log("Toilet Lost!")
+            })
+
+            animationState = "Open" // other option is Close
+
+            toiletAnimationRef = document.getElementById('toilet-animation')
+
+
+            function changeAnimationState() {
+                switch (animationState) {
+                    case "Open":
+                        console.log("Was Open now Close");
+                        animationState = "Close";
+                        toiletRef.animation-mixer.
+                        break;
+                    case "Close":
+                        console.log("Was Close now Open");
+                        animationState = "Open";
+                        break;
+                    default:
+                        console.log("This is VERY WIERD");
+                        animationState = "Open";
+                }
+            }
+        </script>
+
+    </body>
+
+    <!--Inspiration: https://jsfiddle.net/6p0r36bL/4/ -->
+    <!-- For the overlayed button, this has been inspiration -->
+</html>
