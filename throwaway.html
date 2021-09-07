@@ -12,12 +12,32 @@
 
             .bottombutton {
                 position: absolute;
-                width: 250px;
+                width: 20%;
                 height: 50px;
                 bottom: 50px;
-                right: 25%;
-                margin-left: -150px;
+                margin: auto;
+                z-index: 5;
+            }
 
+            .interaction-button {
+                background: rgba(132, 176, 232, 0.8);
+                border: none;
+                border-radius: 12px;
+                color: white;
+                padding: 15px 32px;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 16px;
+            }
+
+            .center {
+               
+                margin: auto;
+                position: relative;
+                text-align: center;
+                top: 80%;
+                width: 20%;
             }
         </style>
         <script>
@@ -37,20 +57,16 @@
                         this.el.setAttribute("scale", scale)
                         tmp = ! tmp
                     })
-
                 }
             })
 
-            AFRAME.registerComponent("toilet-animation", {
-                init: function () {
-                    toiletRef = this.el
+            AFRAME.registerComponent("toilet", {
+                init: function () { // toiletRef = this.el
 
-                    let tmp = false
                     this.el.addEventListener("click", (e) => {
-                        let scale = tmp ? "1 1 1" : "2 2 2"
-                        this.el.setAttribute("scale", scale)
-                        tmp = ! tmp
+                        changeAnimationState()
                     })
+
                 }
             })
         </script>
@@ -59,8 +75,8 @@
 
     <body id="body" style="overflow: hidden;">
 
-        <div id="buttondiv" class="bottombutton" style="visibility: hidden;z-index: 5;">
-            <button class="buttonUI" onclick="changeAnimationState();console.log('BANG')">
+        <div id="buttondiv" class="center" style="visibility: hidden;z-index: 5;">
+            <button class="interaction-button" onclick="changeAnimationState();console.log('BANG')">
                 DUCK!
             </button>
         </div>
@@ -73,7 +89,7 @@
 
             <a-marker type="pattern" url="pattern-marker-toilet.patt" id="toiletmarker">
                 <a-entity toilet id="toilet-animation" position='0 0 0' position='0 0.5 0' scale="1 1 1" rotation="-90 90 -90">
-                    <a-entity gltf-model="#toilet-anim" animation-mixer="clip: Flush"></a-entity>
+                    <a-entity id="toilet-animation-model" gltf-model="#toilet-anim" animation-mixer="clip: Open; loop: once; clampWhenFinished: true"></a-entity>
                 </a-entity>
             </a-marker>
 
@@ -81,8 +97,8 @@
                 <a-entity duck id="duck-instance" position='0 0.5 0.4' rotation="90 90 -90" scale="0.2 0.2 0.2" gltf-model="#duck"></a-entity>
             </a-marker>
 
-            <a-entity cursor="fuse: true; fuseTimeout: 550000000" position="0 0 -1" geometry="primitive: ring; radiusInner: 0.1; radiusOuter: 0.103" material="color: #24cc8b; shader: flat"></a-entity>
-
+            <a-entity cursor="fuse: true; fuseTimeout: 550000000" position="0 0 -1" geometry="primitive: ring; radiusInner: 0.1; radiusOuter: 0.103" material="color: rgba(132, 176, 232, 0.8); shader: flat"></a-entity>
+<!-- old green reticle color #24cc8b -->
             <a-entity camera look-controls="enabled: false"></a-entity>
 
         </a-scene>
@@ -117,11 +133,12 @@
                     case "Open":
                         console.log("Was Open now Close");
                         animationState = "Close";
-                        toiletRef.animation-mixer.
+                        document.getElementById("toilet-animation-model").setAttribute("animation-mixer", "clip: Close")
                         break;
                     case "Close":
                         console.log("Was Close now Open");
                         animationState = "Open";
+                        document.getElementById("toilet-animation-model").setAttribute("animation-mixer", "clip: Open")
                         break;
                     default:
                         console.log("This is VERY WIERD");
@@ -133,5 +150,5 @@
     </body>
 
     <!--Inspiration: https://jsfiddle.net/6p0r36bL/4/ -->
-    <!-- For the overlayed button, this has been inspiration -->
+ 
 </html>
