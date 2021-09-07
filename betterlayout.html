@@ -62,7 +62,8 @@
 
     <script>
         // registering components in AFrame is done like this; the 1st argument string defines an attribute,
-        // which can then be declared directly in the html
+        // which can then be declared directly in the html.
+        // it has to be done before the reading of the a-scene
 
         AFRAME.registerComponent("toilet", {
             init: function () {
@@ -74,7 +75,7 @@
 
     </script>
 
-    <title>HOFOR - Ser du sparemuligheder?</title>
+    <title>HOFOR - Ser du sparemulighederne?</title>
 
 </head>
 
@@ -119,19 +120,19 @@
 
 </a-scene>
 
+<!-- The following buttons are overlayed at relative positions on top of a-scene using css -->
 <div id="interaction-buttondiv" class="interaction-button-div" style="visibility: hidden;">
     <button class="interaction-button" onclick="changeAnimationState();console.log('BANG')">
-        DREJ!
+        DREJ
     </button>
 </div>
 
 <div id="signup-buttondiv" class="signup-button-div" style="visibility: hidden;">
     <form action="https://www.hofor.dk/privat/spar-penge/kom-med-dit-bedste-sparetip">
-        <button class="signup-button" onclick="changeAnimationState();console.log('BANG')">
+        <button class="signup-button" onclick="console.log('BANG')">
             SPAR OG VIND!
         </button>
     </form>
-
 </div>
 
 <script>
@@ -150,20 +151,43 @@
     // next two functions en- and disable the interaction button, they are fed to the marker lost and found events
     function onMarkerFound() {
         interactionButtonDiv.style.visibility = "visible"
-        console.log("Toilet Found!")
+        console.log("Marker Found!")
     }
 
     function onMarkerLost() {
         interactionButtonDiv.style.visibility = "hidden"
-        console.log("Toilet Lost!")
+        console.log("Marker Lost!")
     }
 
     // markerFound and markerLost events are triggered on registering / losing tracking of the marker
     toiletMarker.addEventListener("markerFound", onMarkerFound)
     toiletMarker.addEventListener("markerLost", onMarkerLost)
 
-    //
+    // checks that circumstance are ripe for animation change; and does it if so, or not if not
     function changeAnimationState() {
+        if (itIsTimeForChange()) {
+
+            checkForSwitchToSignupUI()
+
+            switch (animationState) { // change animation depending on current state
+                case "Open":
+                    console.log("Animation State now: Close");
+                    animationState = "Close";
+                    document.getElementById("toilet-animation-model").setAttribute("animation-mixer", "clip: Close")
+                    break;
+                case "Close":
+                    console.log("Animation State now: Open");
+                    animationState = "Open";
+                    document.getElementById("toilet-animation-model").setAttribute("animation-mixer", "clip: Open")
+                    break;
+                default:
+                    console.log("This is VERY WIERD");
+                    animationState = "Open";
+            }
+        }
+    }
+
+    function itIsTimeForChange() {
 
         const now = new Date().getTime()
         // figuring out if enough time has passed between animations
@@ -171,34 +195,21 @@
         if (delta < minimumTimeBetweenAnimationChange ||
             currentNumberOfInteractions >= requiredNumberOfInteractions) {
             console.log("Now " + now + "\nDelta " + delta + "\nYou're too quick! Could not change animation.")
-            return
+            return false
         }
         lastAnimationChangeTime = now // updating time counter
 
-        currentNumberOfInteractions += 1 //
+        currentNumberOfInteractions += 1
 
+        return true
+    }
+
+    function checkForSwitchToSignupUI(){
         if (currentNumberOfInteractions >= requiredNumberOfInteractions) {
             document.getElementById("signup-buttondiv").style.visibility = "visible" // set signup button visible
             toiletMarker.removeEventListener("markerFound", onMarkerFound) // make interaction button not appear again
             onMarkerLost() // make interaction button invisible
         }
-
-        switch (animationState) { // change animation depending on current state
-            case "Open":
-                console.log("Animation State now: Close");
-                animationState = "Close";
-                document.getElementById("toilet-animation-model").setAttribute("animation-mixer", "clip: Close")
-                break;
-            case "Close":
-                console.log("Animation State now: Open");
-                animationState = "Open";
-                document.getElementById("toilet-animation-model").setAttribute("animation-mixer", "clip: Open")
-                break;
-            default:
-                console.log("This is VERY WIERD");
-                animationState = "Open";
-        }
-
     }
 </script>
 </body>
