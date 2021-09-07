@@ -138,20 +138,21 @@
     // this portion of js is here, because despite the instructions from the AFrame documentation,
     // the getting of document elements will not work unless id of the element requested has been defined.
 
-    var minimumTimeBetweenAnimationChange = 1350
-    var requiredNumberOfInteractions = 2
-    var currentNumberOfInteractions = 0
-    var animationState = "Open" // other option is Close
+    let minimumTimeBetweenAnimationChange = 1350;
+    let requiredNumberOfInteractions = 4;
+    let currentNumberOfInteractions = 0;
+    let animationState = "Open"; // other option is Close
     let lastAnimationChangeTime = new Date().getTime()
 
-    var toiletMarker = document.getElementById("toiletmarker")
-    var interactionButtonDiv = document.getElementById("interaction-buttondiv")
+    let toiletMarker = document.getElementById("toiletmarker");
+    let interactionButtonDiv = document.getElementById("interaction-buttondiv");
 
     // next two functions en- and disable the interaction button, they are fed to the marker lost and found events
     function onMarkerFound() {
         interactionButtonDiv.style.visibility = "visible"
         console.log("Toilet Found!")
     }
+
     function onMarkerLost() {
         interactionButtonDiv.style.visibility = "hidden"
         console.log("Toilet Lost!")
@@ -169,8 +170,7 @@
         const delta = now - lastAnimationChangeTime;
         if (delta < minimumTimeBetweenAnimationChange ||
             currentNumberOfInteractions >= requiredNumberOfInteractions) {
-            console.log("Now " + now + "\nDelta " + delta)
-            console.log("You're too quick! Could not change animation.")
+            console.log("Now " + now + "\nDelta " + delta + "\nYou're too quick! Could not change animation.")
             return
         }
         lastAnimationChangeTime = now // updating time counter
@@ -182,7 +182,6 @@
             toiletMarker.removeEventListener("markerFound", onMarkerFound) // make interaction button not appear again
             onMarkerLost() // make interaction button invisible
         }
-
 
         switch (animationState) { // change animation depending on current state
             case "Open":
