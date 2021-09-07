@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script src="https://rawgit.com/jeromeetienne/AR.js/master/aframe/build/aframe-ar.min.js"></script>
+    <script src="https://rawgit.com/mayognaise/aframe-mouse-cursor-component/master/dist/aframe-mouse-cursor-component.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.0.0/dist/aframe-extras.min.js"></script>
+
+    <style>
+
+        .interaction-button-div {
+            position: absolute;
+            bottom: 15%;
+            left: 0;
+            width: 100%;
+            height: 5em;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .interaction-button {
+            background: rgba(132, 176, 232, 0.8);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+        }
+
+        .signup-button-div {
+            position: absolute;
+            bottom: 6.8%;
+            left: 0;
+            width: 100%;
+            height: 6em;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .signup-button {
+            background: rgba(12, 194, 42, 0.604);
+            border: inset 20px rgba(255, 255, 255, 0.255);
+            border-radius: 12px;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 20px;
+        }
+
+    </style>
+
+    <script>
+        // registering components in AFrame is done like this; the 1st argument string defines an attribute,
+        // which can then be declared directly in the html
+
+        AFRAME.registerComponent("toilet", {
+            init: function () {
+                this.el.addEventListener("click", (e) => {
+                    changeAnimationState()
+                })
+            }
+        })
+
+    </script>
+
+    <title>HOFOR - Ser du sparemuligheder?</title>
+
+</head>
+
+<body id="body" style="overflow: hidden; margin: 0px; padding: 0px;">
+
+<a-scene embedded arjs='sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3;'
+         cursor="rayOrigin: mouse" id="scene">
+
+    <a-assets timeout="60000">
+        <a-asset-item id="toilet-anim"
+                      response-type="arraybuffer"
+                      src="models/toilet_anim.gltf">
+        </a-asset-item>
+    </a-assets>
+
+    <a-marker type="pattern"
+              url="pattern-marker-toilet.patt"
+              id="toiletmarker">
+
+        <a-entity toilet id="toilet-animation"
+                  position='0 0 0'
+                  position='0 0.5 0'
+                  scale="1 1 1"
+                  rotation="-90 90 -90">
+
+            <a-entity id="toilet-animation-model"
+                      gltf-model="#toilet-anim"
+                      animation-mixer="clip: Open; loop: once; clampWhenFinished: true">
+            </a-entity>
+
+        </a-entity>
+
+    </a-marker>
+
+    <a-entity cursor="fuse: true; fuseTimeout: 55000"
+              position="0 0 -1">
+    </a-entity>
+
+    <a-entity camera
+              look-controls="enabled: false">
+    </a-entity>
+
+</a-scene>
+
+<div id="interaction-buttondiv" class="interaction-button-div" style="visibility: hidden;">
+    <button class="interaction-button" onclick="changeAnimationState();console.log('BANG')">
+        DREJ!
+    </button>
+</div>
+
+<div id="signup-buttondiv" class="signup-button-div" style="visibility: hidden;">
+    <form action="https://www.hofor.dk/privat/spar-penge/kom-med-dit-bedste-sparetip">
+        <button class="signup-button" onclick="changeAnimationState();console.log('BANG')">
+            SPAR OG VIND!
+        </button>
+    </form>
+
+</div>
+
+<script>
+    // this portion of js is here, because despite the instructions from the AFrame documentation,
+    // the getting of document elements will not work unless id of the element requested has been defined.
+
+    var minimumTimeBetweenAnimationChange = 1350
+    var requiredNumberOfInteractions = 2
+    var currentNumberOfInteractions = 0
+    var animationState = "Open" // other option is Close
+    let lastAnimationChangeTime = new Date().getTime()
+
+    var toiletMarker = document.getElementById("toiletmarker")
+    var interactionButtonDiv = document.getElementById("interaction-buttondiv")
+
+    // next two functions en- and disable the interaction button, they are fed to the marker lost and found events
+    function onMarkerFound() {
+        interactionButtonDiv.style.visibility = "visible"
+        console.log("Toilet Found!")
+    }
+    function onMarkerLost() {
+        interactionButtonDiv.style.visibility = "hidden"
+        console.log("Toilet Lost!")
+    }
+
+    // markerFound and markerLost events are triggered on registering / losing tracking of the marker
+    toiletMarker.addEventListener("markerFound", onMarkerFound)
+    toiletMarker.addEventListener("markerLost", onMarkerLost)
+
+    //
+    function changeAnimationState() {
+
+        const now = new Date().getTime()
+        // figuring out if enough time has passed between animations
+        const delta = now - lastAnimationChangeTime;
+        if (delta < minimumTimeBetweenAnimationChange ||
+            currentNumberOfInteractions >= requiredNumberOfInteractions) {
+            console.log("Now " + now + "\nDelta " + delta)
+            console.log("You're too quick! Could not change animation.")
+            return
+        }
+        lastAnimationChangeTime = now // updating time counter
+
+        currentNumberOfInteractions += 1 //
+
+        if (currentNumberOfInteractions >= requiredNumberOfInteractions) {
+            document.getElementById("signup-buttondiv").style.visibility = "visible" // set signup button visible
+            toiletMarker.removeEventListener("markerFound", onMarkerFound) // make interaction button not appear again
+            onMarkerLost() // make interaction button invisible
+        }
+
+
+        switch (animationState) { // change animation depending on current state
+            case "Open":
+                console.log("Animation State now: Close");
+                animationState = "Close";
+                document.getElementById("toilet-animation-model").setAttribute("animation-mixer", "clip: Close")
+                break;
+            case "Close":
+                console.log("Animation State now: Open");
+                animationState = "Open";
+                document.getElementById("toilet-animation-model").setAttribute("animation-mixer", "clip: Open")
+                break;
+            default:
+                console.log("This is VERY WIERD");
+                animationState = "Open";
+        }
+
+    }
+</script>
+</body>
+</html>
+
+<!--Code for VRDK by KCN-->
+
+<!--Inspiration: https://jsfiddle.net/6p0r36bL/4/ -->
+<!--AFrame Components:-->
+<!--https://aframe.io/docs/1.2.0/introduction/writing-a-component.html-->
+<!--https://aframe.io/docs/1.2.0/core/component.html-->
