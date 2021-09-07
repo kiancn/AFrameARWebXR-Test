@@ -9,16 +9,6 @@
         <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.0.0/dist/aframe-extras.min.js"></script>
 
         <style>
-
-            .bottombutton {
-                position: absolute;
-                width: 20%;
-                height: 50px;
-                bottom: 50px;
-                margin: auto;
-                z-index: 5;
-            }
-
             .interaction-button {
                 background: rgba(132, 176, 232, 0.8);
                 border: none;
@@ -29,15 +19,6 @@
                 text-decoration: none;
                 display: inline-block;
                 font-size: 16px;
-            }
-
-            .center {
-
-                margin: auto;
-                position: relative;
-                text-align: center;
-                top: 70%;
-                width: 20%;
             }
 
             .buttons {
@@ -57,28 +38,25 @@
             // registering components in AFrame is done like this; the 1st argument string defines a tag,
             // which can then be declared directly in the html
 
-            var duckRef
+            // var duckRef
             var toiletRef
 
-            AFRAME.registerComponent("duck", {
-                init: function () {
-                    duckRef = this.el
+            // AFRAME.registerComponent("duck", {
+            //     init: function () {
+            //         duckRef = this.el
 
-                    let tmp = false
-                    this.el.addEventListener("click", (e) => {
-                        let scale = tmp ? "0.2 0.2 0.2" : "0.51 0.51 0.51"
-                        this.el.setAttribute("scale", scale)
-                        tmp = ! tmp
-                    })
-                }
-            })
+            //         let tmp = false
+            //         this.el.addEventListener("click", (e) => {
+            //             let scale = tmp ? "0.2 0.2 0.2" : "0.51 0.51 0.51"
+            //             this.el.setAttribute("scale", scale)
+            //             tmp = ! tmp
+            //         })
+            //     }
+            // })
 
             AFRAME.registerComponent("toilet", {
-                init: function () { // toiletRef = this.el
-
-                    this.el.addEventListener("click", (e) => { // changeAnimationState()
-                    })
-
+                init: function () {
+                    this.el.addEventListener("click", (e) => {  changeAnimationState()  })
                 }
             })
         </script>
@@ -91,7 +69,7 @@
         <a-scene embedded arjs='sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3;' cursor="rayOrigin: mouse" id="scene">
             <a-assets timeout="60000">
                 <a-asset-item id="toilet-anim" response-type="arraybuffer" src="models/toilet_anim.gltf"></a-asset-item>
-                <a-asset-item id="duck" src="models/duck/Duck.gltf"></a-asset-item>
+                <!-- <a-asset-item id="duck" src="models/duck/Duck.gltf"></a-asset-item> -->
             </a-assets>
 
             <a-marker type="pattern" url="pattern-marker-toilet.patt" id="toiletmarker">
@@ -99,12 +77,12 @@
                     <a-entity id="toilet-animation-model" gltf-model="#toilet-anim" animation-mixer="clip: Open; loop: once; clampWhenFinished: true"></a-entity>
                 </a-entity>
             </a-marker>
-
+<!-- 
             <a-marker type="pattern" url="pattern-marker-water-splash.patt">
                 <a-entity duck id="duck-instance" position='0 0.5 0.4' rotation="90 90 -90" scale="0.2 0.2 0.2" gltf-model="#duck"></a-entity>
-            </a-marker>
+            </a-marker> -->
 
-            <a-entity cursor="fuse: false; fuseTimeout: 99990000000" position="0 0.2 -1" geometry="primitive: ring; radiusInner: 0.1; radiusOuter: 0.103" material="color: rgba(132, 176, 232, 0.8); shader: flat"></a-entity>
+            <a-entity cursor="fuse: false; fuseTimeout: 99990000000" position="0 0.2 -1" geometry="primitive: ring; radiusInner: 0.1; radiusOuter: 0.101" material="color: rgba(132, 176, 232, 0.8); shader: flat"></a-entity>
 
             <!-- old green reticle color #24cc8b -->
             <a-entity camera look-controls="enabled: false"></a-entity>
@@ -125,15 +103,15 @@
 
             console.log(toiletRef)
 
-            duckButtonDiv = document.getElementById("buttondiv")
+            interactionButtonDiv = document.getElementById("buttondiv")
             // markerFound and markerLost events are triggered on registering / losing tracking of the marker
             toiletRef.addEventListener("markerFound", function () {
-                duckButtonDiv.style.visibility = "visible";
+                interactionButtonDiv.style.visibility = "visible";
                 console.log("Toilet Found!")
             })
 
             toiletRef.addEventListener("markerLost", function () {
-                duckButtonDiv.style.visibility = "hidden";
+                interactionButtonDiv.style.visibility = "hidden";
                 console.log("Toilet Lost!")
             })
 
@@ -141,9 +119,24 @@
 
             toiletAnimationRef = document.getElementById('toilet-animation')
 
-            
+            let minimumTimeBetweenAnimationChange = 1350
 
-            function changeAnimationState() {
+
+            let lastTime = new Date().getTime()
+
+            function changeAnimationState() { 
+                const now = new Date().getTime()
+                // figuring out if enough time has passed between animations
+                const delta = now - lastTime;
+
+                if (delta < minimumTimeBetweenAnimationChange) {
+                    console.log("Now " + now + "\nDelta " + delta)
+                    console.log("You're too quick!")
+                    return
+                }
+                // if enough time had passed, now is the last time we changed animation
+                lastTime = now
+                // change animaion
                 switch (animationState) {
                     case "Open":
                         console.log("Was Open now Close");
