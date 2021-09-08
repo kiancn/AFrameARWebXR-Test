@@ -97,7 +97,10 @@
 <body id="body" style="overflow: hidden; margin: 0px; padding: 0px;">
 
 <a-scene embedded arjs='sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3;'
-         cursor="rayOrigin: mouse" id="scene">
+         cursor="rayOrigin: mouse"
+         id="scene"
+         loading-screen="dotsColor: red; backgroundColor: black"
+         >
 
     <a-assets timeout="60000">
         <a-asset-item id="toilet-anim"
@@ -107,7 +110,7 @@
     </a-assets>
 
     <a-marker type="pattern"
-              url="pattern-marker-toilet.patt"
+    url="pattern-HOFORtestmarker.patt"
               id="toiletmarker">
 
         <a-entity toilet id="toilet-animation"
