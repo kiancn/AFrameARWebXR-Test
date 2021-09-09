@@ -9,7 +9,6 @@
     <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.0.0/dist/aframe-extras.min.js"></script>
 
     <style>
-
         .interaction-button-div {
             position: absolute;
             bottom: 15%;
@@ -55,61 +54,62 @@
             text-align: center;
             text-decoration: none;
             display: inline-block;
-            font-size: 20px;
+            font-size: 26px;
         }
 
     </style>
 
     <script>
         // registering components in AFrame is done like this; the 1st argument string defines an attribute,
-        // which can then be declared directly in the html
+        // which can then be declared directly in the html.
+        // it has to be done before the reading of the a-scene
 
-        AFRAME.registerComponent("toilet", {
+        AFRAME.registerComponent("faucet", {
             init: function () {
                 this.el.addEventListener("click", (e) => {
                     changeAnimationState()
                 })
             }
         })
-
     </script>
-
-    <title>HOFOR - Ser du sparemuligheder?</title>
-
+    <title>HOFOR Vand og Varme Sparekonkurrence</title>
 </head>
-
 <body id="body" style="overflow: hidden; margin: 0px; padding: 0px;">
 
+<!-- This is the A-Frame scene -->
+
 <a-scene embedded arjs='sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3;'
-         cursor="rayOrigin: mouse" id="scene">
+         cursor="rayOrigin: mouse"
+         id="scene"
+         loading-screen="dotsColor: red; backgroundColor: black">
 
     <a-assets timeout="60000">
-        <a-asset-item id="toilet-anim"
+        <a-asset-item id="faucet-anim"
                       response-type="arraybuffer"
-                      src="models/toilet_anim.gltf">
+                      src="models/vandhane.gltf">
         </a-asset-item>
     </a-assets>
 
     <a-marker type="pattern"
-              url="pattern-marker-toilet.patt"
-              id="toiletmarker">
+              url="pattern-HOFORtestmarker.patt"
+              id="faucetmarker">
 
-        <a-entity toilet id="toilet-animation"
-                  position='0 0 0'
-                  position='0 0.5 0'
-                  scale="1 1 1"
-                  rotation="-90 90 -90">
+        <a-entity faucet id="faucet-animation"
+                  position='0 0.5 0.5'
 
-            <a-entity id="toilet-animation-model"
-                      gltf-model="#toilet-anim"
-                      animation-mixer="clip: Open; loop: once; clampWhenFinished: true">
+                  scale="0.3 0.3 0.3"
+                  rotation="180 90 -90">
+
+            <a-entity id="faucet-animation-model"
+                      gltf-model="#faucet-anim"
+                      animation-mixer="clip: IdleHigh; loop: once; clampWhenFinished: true">
             </a-entity>
 
         </a-entity>
 
     </a-marker>
 
-    <a-entity cursor="fuse: true; fuseTimeout: 55000"
+    <a-entity cursor="fuse: true; fuseTimeout: 15000;"
               position="0 0 -1">
     </a-entity>
 
@@ -119,88 +119,112 @@
 
 </a-scene>
 
+<!-- The following buttons are overlayed at relative positions on top of a-scene using css -->
+
 <div id="interaction-buttondiv" class="interaction-button-div" style="visibility: hidden;">
     <button class="interaction-button" onclick="changeAnimationState();console.log('BANG')">
-        DREJ!
+        DREJ
     </button>
 </div>
 
 <div id="signup-buttondiv" class="signup-button-div" style="visibility: hidden;">
     <form action="https://www.hofor.dk/privat/spar-penge/kom-med-dit-bedste-sparetip">
-        <button class="signup-button" onclick="changeAnimationState();console.log('BANG')">
+        <button class="signup-button" onclick="console.log('BANG')">
             SPAR OG VIND!
         </button>
     </form>
-
 </div>
 
 <script>
-    // this portion of js is here, because despite the instructions from the AFrame documentation,    
+    // this portion of js is here, because despite the instructions from the AFrame documentation,
     // the getting of document elements will not work unless id of the element requested has been defined.
 
-    var minimumTimeBetweenAnimationChange = 1350
-    var requiredNumberOfInteractions = 2
-    var currentNumberOfInteractions = 0
-    var animationState = "Open" // other option is Close
+    let minimumTimeBetweenAnimationChange = 1350;
+    let requiredNumberOfInteractions = 4;
+    let currentNumberOfInteractions = 0;
+    let animationState = "IdleHigh"; // other option is Close
+    var animationStates = ['IdleHigh', 'HighToMedium', 'MediumToLow', 'LowToOff', 'IdleOff']
     let lastAnimationChangeTime = new Date().getTime()
 
-    var toiletMarker = document.getElementById("toiletmarker")
-    var interactionButtonDiv = document.getElementById("interaction-buttondiv")
+    let faucetMarker = document.getElementById("faucetmarker");
+    let interactionButtonDiv = document.getElementById("interaction-buttondiv");
 
     // next two functions en- and disable the interaction button, they are fed to the marker lost and found events
     function onMarkerFound() {
         interactionButtonDiv.style.visibility = "visible"
-        console.log("Toilet Found!")
+        console.log("Marker Found!")
     }
+
     function onMarkerLost() {
         interactionButtonDiv.style.visibility = "hidden"
-        console.log("Toilet Lost!")
+        console.log("Marker Lost!")
     }
 
     // markerFound and markerLost events are triggered on registering / losing tracking of the marker
-    toiletMarker.addEventListener("markerFound", onMarkerFound)
-    toiletMarker.addEventListener("markerLost", onMarkerLost)
+    faucetMarker.addEventListener("markerFound", onMarkerFound)
+    faucetMarker.addEventListener("markerLost", onMarkerLost)
 
-    //
+    // checks that circumstance are ripe for animation change; and does it if so, or not if not
     function changeAnimationState() {
+        if (itIsTimeForChange()) {
+            currentNumberOfInteractions += 1
+            checkForSwitchToSignupUI()
+
+            animationState = animationStates[currentNumberOfInteractions]
+            // animationstate is 1 the first time the code reaches here
+            // ['IdleHigh', 'HighToMedium', 'MediumToLow', 'LowToOff', 'IdleOff']
+
+            document.getElementById("faucet-animation-model").setAttribute("animation-mixer", "clip: " + animationState)
+            //
+            // switch (animationState) { // change animation depending on current state
+            //     case "HighToMedium":
+            //         animationState = "HighToMedium";
+            //         document.getElementById("faucet-animation-model").setAttribute("animation-mixer", "clip: HighToMedium")
+            //         break;
+            //     case "MediumToLow":
+            //         animationState = "MediumToLow";
+            //         document.getElementById("faucet-animation-model").setAttribute("animation-mixer", "clip: -")
+            //         break;
+            //     case "LowToOff":
+            //         animationState = "LowToOff";
+            //         document.getElementById("faucet-animation-model").setAttribute("animation-mixer", "clip: -")
+            //         break;
+            //     case "HighToMedium":
+            //         animationState = "-";
+            //         document.getElementById("faucet-animation-model").setAttribute("animation-mixer", "clip: -")
+            //         break;
+            //     default:
+            //
+            //         animationState = "Open";
+            // }
+            console.log("Animation State now: " + animationState);
+        }
+    }
+
+    function itIsTimeForChange() {
 
         const now = new Date().getTime()
         // figuring out if enough time has passed between animations
         const delta = now - lastAnimationChangeTime;
+        // do not launch change if too little time has passed, or too enough interactions have been registered.
         if (delta < minimumTimeBetweenAnimationChange ||
             currentNumberOfInteractions >= requiredNumberOfInteractions) {
-            console.log("Now " + now + "\nDelta " + delta)
-            console.log("You're too quick! Could not change animation.")
-            return
+            console.log("Now " + now + "\nDelta " + delta + "\nYou're too quick! Could not change animation.")
+            return false
         }
         lastAnimationChangeTime = now // updating time counter
 
-        currentNumberOfInteractions += 1 //
+        return true
+    }
 
+    function checkForSwitchToSignupUI() {
         if (currentNumberOfInteractions >= requiredNumberOfInteractions) {
             document.getElementById("signup-buttondiv").style.visibility = "visible" // set signup button visible
-            toiletMarker.removeEventListener("markerFound", onMarkerFound) // make interaction button not appear again
+            faucetMarker.removeEventListener("markerFound", onMarkerFound) // make interaction button not appear again
             onMarkerLost() // make interaction button invisible
         }
-
-
-        switch (animationState) { // change animation depending on current state
-            case "Open":
-                console.log("Animation State now: Close");
-                animationState = "Close";
-                document.getElementById("toilet-animation-model").setAttribute("animation-mixer", "clip: Close")
-                break;
-            case "Close":
-                console.log("Animation State now: Open");
-                animationState = "Open";
-                document.getElementById("toilet-animation-model").setAttribute("animation-mixer", "clip: Open")
-                break;
-            default:
-                console.log("This is VERY WIERD");
-                animationState = "Open";
-        }
-
     }
+
 </script>
 </body>
 </html>
