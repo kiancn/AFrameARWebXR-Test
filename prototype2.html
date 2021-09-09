@@ -7,6 +7,9 @@
     <script src="https://rawgit.com/jeromeetienne/AR.js/master/aframe/build/aframe-ar.min.js"></script>
     <script src="https://rawgit.com/mayognaise/aframe-mouse-cursor-component/master/dist/aframe-mouse-cursor-component.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.0.0/dist/aframe-extras.min.js"></script>
+    <script src="https://rawcdn.githack.com/elbobo/aframe-gltf-morph-component/07e9b80bd382cc1c19223468d35c453e7c76e9a2/dist/aframe-gltf-morph-component.js"></script>
+       
+
 
     <style>
         .interaction-button-div {
@@ -71,6 +74,55 @@
                 })
             }
         })
+
+        AFRAME.registerComponent('water', {
+    init: function () {
+        console.log("init water");
+      // Wait for model to load.
+      this.el.addEventListener('model-loaded', () => {
+        // Grab the mesh / scene.
+        let mesh = this.el.getObject3D('mesh');
+        // Go over the submeshes and modify materials we want.
+        mesh.traverse(node => {
+          if (node.name == 'wTube006') {
+            node.material.opacity = 0.5;
+          }
+
+        });
+      });
+    }
+ });
+    AFRAME.registerComponent("modify-mat", {
+        init: function() {
+          var targetCube = new THREE.WebGLRenderTargetCube(512, 512);
+          var renderer = this.el.sceneEl.renderer;
+          renderer.toneMapping = THREE.ACESFilmicToneMapping;
+          renderer.toneMappingExposure = 0.5;
+          renderer.outputEncoding = THREE.sRGBEncoding;
+
+          this.el.addEventListener("model-loaded", e => {
+            let mesh = this.el.getObject3D("mesh");
+                        
+            
+            var texture = new THREE.TextureLoader().load(
+              "comfy_cafe_1k.png",
+              function() {
+                var cubeTex = targetCube.fromEquirectangularTexture(renderer, texture);
+                mesh.traverse(function(el) {
+                  if (el.material) {
+                    el.material.envMap = cubeTex.texture;
+                    el.material.envMap.intensity = 1;
+                    el.material.needsUpdate = true;
+                  }
+                });
+
+              }
+            );
+          });
+        }     
+  });
+
+
     </script>
     <title>HOFOR Vand og Varme Sparekonkurrence</title>
 </head>
@@ -86,23 +138,25 @@
     <a-assets timeout="60000">
         <a-asset-item id="faucet-anim"
                       response-type="arraybuffer"
-                      src="models/vandhane.gltf">
+                      src="Vandhane_metal.gltf">
         </a-asset-item>
     </a-assets>
 
     <a-marker type="pattern"
-              url="pattern-HOFORtestmarker.patt"
+              url="pattern-marker-water-splash2.patt"
               id="faucetmarker">
 
-        <a-entity faucet id="faucet-animation"
+        <a-entity faucet 
+                  id="faucet-animation"
                   position='0 0.5 0.5'
-
                   scale="0.3 0.3 0.3"
-                  rotation="180 90 -90">
+                  rotation="180 90 -90"                 >
 
-            <a-entity id="faucet-animation-model"
+            <a-entity modify-mat water
+                      id="faucet-animation-model"
                       gltf-model="#faucet-anim"
-                      animation-mixer="clip: IdleHigh; loop: once; clampWhenFinished: true">
+                      animation-mixer="clip: IdleHigh; loop: once; clampWhenFinished: true"
+                      gltf-morph="morphtarget: Low;value: 0">
             </a-entity>
 
         </a-entity>
@@ -123,7 +177,7 @@
 
 <div id="interaction-buttondiv" class="interaction-button-div" style="visibility: hidden;">
     <button class="interaction-button" onclick="changeAnimationState();console.log('BANG')">
-        DREJ
+        SKRU NED
     </button>
 </div>
 
@@ -173,30 +227,8 @@
             animationState = animationStates[currentNumberOfInteractions]
             // animationstate is 1 the first time the code reaches here
             // ['IdleHigh', 'HighToMedium', 'MediumToLow', 'LowToOff', 'IdleOff']
-
             document.getElementById("faucet-animation-model").setAttribute("animation-mixer", "clip: " + animationState)
-            //
-            // switch (animationState) { // change animation depending on current state
-            //     case "HighToMedium":
-            //         animationState = "HighToMedium";
-            //         document.getElementById("faucet-animation-model").setAttribute("animation-mixer", "clip: HighToMedium")
-            //         break;
-            //     case "MediumToLow":
-            //         animationState = "MediumToLow";
-            //         document.getElementById("faucet-animation-model").setAttribute("animation-mixer", "clip: -")
-            //         break;
-            //     case "LowToOff":
-            //         animationState = "LowToOff";
-            //         document.getElementById("faucet-animation-model").setAttribute("animation-mixer", "clip: -")
-            //         break;
-            //     case "HighToMedium":
-            //         animationState = "-";
-            //         document.getElementById("faucet-animation-model").setAttribute("animation-mixer", "clip: -")
-            //         break;
-            //     default:
-            //
-            //         animationState = "Open";
-            // }
+
             console.log("Animation State now: " + animationState);
         }
     }
