@@ -8,7 +8,6 @@
     <script src="https://rawgit.com/mayognaise/aframe-mouse-cursor-component/master/dist/aframe-mouse-cursor-component.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.0.0/dist/aframe-extras.min.js"></script>
     <script src="https://rawcdn.githack.com/elbobo/aframe-gltf-morph-component/07e9b80bd382cc1c19223468d35c453e7c76e9a2/dist/aframe-gltf-morph-component.js"></script>
-       
 
 
     <style>
@@ -70,60 +69,60 @@
         AFRAME.registerComponent("faucet", {
             init: function () {
                 this.el.addEventListener("click", (e) => {
-                    changeAnimationState()
+                    // enable to have an automatic count-down
+                    // clicking is automatic for some dang reason
+                    // changeAnimationState()
                 })
             }
         })
 
         AFRAME.registerComponent('water', {
-    init: function () {
-        console.log("init water");
-      // Wait for model to load.
-      this.el.addEventListener('model-loaded', () => {
-        // Grab the mesh / scene.
-        let mesh = this.el.getObject3D('mesh');
-        // Go over the submeshes and modify materials we want.
-        mesh.traverse(node => {
-          if (node.name == 'wTube006') {
-            node.material.opacity = 0.5;
-          }
+            init: function () {
+                console.log("Init water");
+                // Wait for model to load.
+                this.el.addEventListener('model-loaded', () => {
+                    // Grab the mesh / scene.
+                    let mesh = this.el.getObject3D('mesh');
+                    // Go over the submeshes and modify materials we want.
+                    mesh.traverse(node => {
+                        if (node.name == 'wTube006') {
+                            node.material.opacity = 0.5;
+                        }
 
-        });
-      });
-    }
- });
-    AFRAME.registerComponent("modify-mat", {
-        init: function() {
-          var targetCube = new THREE.WebGLRenderTargetCube(512, 512);
-          var renderer = this.el.sceneEl.renderer;
-          renderer.toneMapping = THREE.ACESFilmicToneMapping;
-          renderer.toneMappingExposure = 0.5;
-          renderer.outputEncoding = THREE.sRGBEncoding;
-
-          this.el.addEventListener("model-loaded", e => {
-            let mesh = this.el.getObject3D("mesh");
-                        
-            
-            var texture = new THREE.TextureLoader().load(
-              "comfy_cafe_1k.png",
-              function() {
-                var cubeTex = targetCube.fromEquirectangularTexture(renderer, texture);
-                mesh.traverse(function(el) {
-                  if (el.material) {
-                    el.material.envMap = cubeTex.texture;
-                    el.material.envMap.intensity = 1;
-                    el.material.needsUpdate = true;
-                  }
+                    });
                 });
+            }
+        });
+        AFRAME.registerComponent("modify-mat", {
+            init: function () {
+                var targetCube = new THREE.WebGLRenderTargetCube(512, 512);
+                var renderer = this.el.sceneEl.renderer;
+                renderer.toneMapping = THREE.ACESFilmicToneMapping;
+                renderer.toneMappingExposure = 0.5;
+                renderer.outputEncoding = THREE.sRGBEncoding;
 
-              }
-            );
-          });
-        }     
-  });
+                this.el.addEventListener("model-loaded", e => {
+                    let mesh = this.el.getObject3D("mesh");
 
+                    var texture = new THREE.TextureLoader().load(
+                        "comfy_cafe_1k.png",
+                        function () {
+                            var cubeTex = targetCube.fromEquirectangularTexture(renderer, texture);
+                            mesh.traverse(function (el) {
+                                if (el.material) {
+                                    el.material.envMap = cubeTex.texture;
+                                    el.material.envMap.intensity = 1;
+                                    el.material.needsUpdate = true;
+                                }
+                            });
 
+                        }
+                    );
+                });
+            }
+        });
     </script>
+
     <title>HOFOR Vand og Varme Sparekonkurrence</title>
 </head>
 <body id="body" style="overflow: hidden; margin: 0px; padding: 0px;">
@@ -133,7 +132,8 @@
 <a-scene embedded arjs='sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3;'
          cursor="rayOrigin: mouse"
          id="scene"
-         loading-screen="dotsColor: red; backgroundColor: black">
+         loading-screen="dotsColor: red; backgroundColor: black"
+         vr-mode-ui="enabled: false">
 
     <a-assets timeout="60000">
         <a-asset-item id="faucet-anim"
@@ -146,15 +146,15 @@
               url="pattern-roughqrmarker.patt"
               id="faucetmarker"> -->
 
-              <a-marker type="barcode"
-              value='42'
+    <a-marker type="barcode"
+              value='20'
               id="faucetmarker">
 
-        <a-entity faucet 
+        <a-entity faucet
                   id="faucet-animation"
                   position='0 0.5 0.5'
                   scale="1 1 1"
-                  rotation="180 90 -90"                 >
+                  rotation="180 90 -90">
 
             <a-entity modify-mat water
                       id="faucet-animation-model"
@@ -201,7 +201,7 @@
     let requiredNumberOfInteractions = 3;
     let currentNumberOfInteractions = 0;
     let animationState = "IdleHigh"; // other option is Close
-    var animationStates = ['IdleHigh', 'HighToMedium', 'MediumToLow', 'LowToOff', 'IdleOff']
+    let animationStates = ['IdleHigh', 'HighToMedium', 'MediumToLow', 'LowToOff', 'IdleOff']
     let lastAnimationChangeTime = new Date().getTime()
 
     let faucetMarker = document.getElementById("faucetmarker");
