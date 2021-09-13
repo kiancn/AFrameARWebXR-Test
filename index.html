@@ -1,52 +1,280 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 
-        <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
-        <script src="https://rawgit.com/jeromeetienne/AR.js/master/aframe/build/aframe-ar.min.js"></script>
-        <script src="https://rawgit.com/donmccurdy/aframe-extras/master/dist/aframe-extras.loaders.min.js"></script>
-       
+<head>
 
-        <script src="js/interaction-events.js"></script>
-
-        <title>AFrame WebXR Multiple Image Recognition test.</title>
-    </head>
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script src="https://rawgit.com/jeromeetienne/AR.js/master/aframe/build/aframe-ar.min.js"></script>
+    <script src="https://rawgit.com/mayognaise/aframe-mouse-cursor-component/master/dist/aframe-mouse-cursor-component.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.0.0/dist/aframe-extras.min.js"></script>
+    <script src="https://rawcdn.githack.com/elbobo/aframe-gltf-morph-component/07e9b80bd382cc1c19223468d35c453e7c76e9a2/dist/aframe-gltf-morph-component.js"></script>
 
 
-    <body style='margin : 0px; overflow: hidden;'>
-        <a-scene embedded arjs='sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3;'>
+    <style>
+        .interaction-button-div {
+            position: absolute;
+            bottom: 15%;
+            left: 0;
+            width: 100%;
+            height: 5em;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+        }
 
-            <a-assets timeout="600000">
+        .interaction-button {
+            background: rgba(132, 176, 232, 0.8);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+        }
 
-                <a-asset-item id="fauset" src="models/fauset_test.gltf"></a-asset-item>
-                <a-asset-item id="toilet" src="models/toilet.gltf"></a-asset-item>
-                <a-asset-item id="duck" src="models/duck/Duck.gltf"></a-asset-item>
-            </a-assets>
-            
-            <a-marker marker-click-handler-splash emitevents="true" cursor="rayOrigin: mouse" type="pattern" url="pattern-marker-water-splash.patt" id="marker-splash">
-                <a-entity id="fauset-instance" position='0 0.5 0.4' scale="2 2 2" rotation="0 90 -90" gltf-model="#fauset">                  
-                </a-entity>
-            </a-marker>
+        .signup-button-div {
+            position: absolute;
+            bottom: 6.8%;
+            left: 0;
+            width: 100%;
+            height: 6em;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+        }
 
-            <a-marker type="pattern" url="pattern-marker-toilet.patt">
-                    <a-entity gltf-model="#toilet" id="toilet-instance"
-                    position='0 0.5 0.4' scale="1 1 1" rotation="-90 90 -90"
-                    material="metalness: 1; roughness: 1;"></a-entity>
-            </a-marker>
+        .signup-button {
+            background: rgba(12, 194, 42, 0.604);
+            border: inset 20px rgba(255, 255, 255, 0.255);
+            border-radius: 12px;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 26px;
+        }
 
-            <!-- define markers and objects -->
-            <!-- <a-marker marker-click-handler-duck emitevents="true" cursor="rayOrigin: mouse" type="pattern" url="pattern-self2020closeup.patt" id="marker-duck"> -->
-            <a-marker marker-click-handler-duck emitevents="true" cursor="rayOrigin: mouse" type="pattern" url="pattern-self2020closeup.patt" id="marker-duck">
-                <a-entity id="duck-instance" position='0 0.5 0.4' scale="1" rotation="90 90 -90" gltf-model="#duck"></a-entity>
-            </a-marker>
+    </style>
 
-            <a-entity mouse-cursor></a-entity>
+    <script>
+        // registering components in AFrame is done like this; the 1st argument string defines an attribute,
+        // which can then be declared directly in the html.
+        // it has to be done before the reading of the a-scene
 
-            <!-- define a camera -->
-            <a-entity camera></a-entity>
+        AFRAME.registerComponent("faucet", {
+            init: function () {
+                this.el.addEventListener("click", (e) => {
+                    // enable to have an automatic count-down
+                    // clicking is automatic for some dang reason
+                    // changeAnimationState()
+                })
+            }
+        })
 
-        </a-scene>
-    </body>
+        AFRAME.registerComponent('water', {
+            init: function () {
+                console.log("Init water");
+                // Wait for model to load.
+                this.el.addEventListener('model-loaded', () => {
+                    // Grab the mesh / scene.
+                    let mesh = this.el.getObject3D('mesh');
+                    // Go over the submeshes and modify materials we want.
+                    mesh.traverse(node => {
+                        if (node.name == 'wTube006') {
+                            node.material.opacity = 0.5;
+                        }
 
+                    });
+                });
+            }
+        });
+        AFRAME.registerComponent("modify-mat", {
+            init: function () {
+                var targetCube = new THREE.WebGLRenderTargetCube(512, 512);
+                var renderer = this.el.sceneEl.renderer;
+                renderer.toneMapping = THREE.ACESFilmicToneMapping;
+                renderer.toneMappingExposure = 0.5;
+                renderer.outputEncoding = THREE.sRGBEncoding;
+
+                this.el.addEventListener("model-loaded", e => {
+                    let mesh = this.el.getObject3D("mesh");
+
+                    var texture = new THREE.TextureLoader().load(
+                        "comfy_cafe_1k.png",
+                        function () {
+                            var cubeTex = targetCube.fromEquirectangularTexture(renderer, texture);
+                            mesh.traverse(function (el) {
+                                if (el.material) {
+                                    el.material.envMap = cubeTex.texture;
+                                    el.material.envMap.intensity = 1;
+                                    el.material.needsUpdate = true;
+                                }
+                            });
+
+                        }
+                    );
+                });
+            }
+        });
+    </script>
+
+    <title>HOFOR Vand og Varme Sparekonkurrence</title>
+</head>
+<body id="body" style="overflow: hidden; margin: 0px; padding: 0px;">
+
+<!-- This is the A-Frame scene -->
+
+<a-scene embedded arjs='sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3;'
+         cursor="rayOrigin: mouse"
+         id="scene"
+         loading-screen="dotsColor: red; backgroundColor: black"
+         vr-mode-ui="enabled: false"
+         device-orientation-permission-ui="enabled: false">
+
+    <a-assets timeout="60000">
+        <a-asset-item id="faucet-anim"
+                      response-type="arraybuffer"
+                      src="Vandhane_metal2.gltf">
+        </a-asset-item>
+        <a-sound id="water-sound" src="url(water_splatter.mp3)" autoplay="true"></a-sound>
+    </a-assets>
+
+    <a-marker type="pattern"
+              url="pattern-HoforHandPhone0913-Bigger.patt"
+              id="faucetmarker">
+<!-- 
+    <a-marker type="barcode"
+              value='20'
+              id="faucetmarker"> -->
+
+        <a-entity faucet
+                  id="faucet-animation"
+                  position='0 0.5 0.5'
+                  scale="0.2 0.2 0.2"
+                  rotation="180 90 -90">
+
+            <a-entity modify-mat water
+                      id="faucet-animation-model"
+                      gltf-model="#faucet-anim"
+                      animation-mixer="clip: IdleHigh; loop: repeat; clampWhenFinished: true"
+                      gltf-morph="morphtarget: Low;value: 0">
+            </a-entity>
+
+        </a-entity>
+
+    </a-marker>
+
+    <a-entity cursor="fuse: true; fuseTimeout: 15000;"
+              position="0 0 -1">
+    </a-entity>
+
+    <a-entity camera
+              look-controls="enabled: false">
+    </a-entity>
+
+</a-scene>
+
+<!-- The following buttons are overlayed at relative positions on top of a-scene using css -->
+
+<div id="interaction-buttondiv" class="interaction-button-div" style="visibility: hidden;">
+    <button class="interaction-button" onclick="changeAnimationState();console.log('BANG')">
+        SKRU NED
+    </button>
+</div>
+
+<div id="signup-buttondiv" class="signup-button-div" style="visibility: hidden;">
+    <form action="https://www.hofor.dk/privat/spar-penge/kom-med-dit-bedste-sparetip">
+        <button class="signup-button" onclick="console.log('BANG')">
+            SPAR OG VIND!
+        </button>
+    </form>
+</div>
+
+<script>
+    // this portion of js is here, because despite the instructions from the AFrame documentation,
+    // the getting of document elements will not work unless id of the element requested has been defined.
+
+    let minimumTimeBetweenAnimationChange = 1350;
+    let requiredNumberOfInteractions = 1;
+    let currentNumberOfInteractions = 0;
+    let animationState = "IdleHigh"; // other option is Close
+    let animationStates = ['IdleHigh', 'HighToOff', 'IdleOff']
+    let lastAnimationChangeTime = new Date().getTime()
+
+    let faucetMarker = document.getElementById("faucetmarker");
+    let interactionButtonDiv = document.getElementById("interaction-buttondiv");
+
+    // next two functions en- and disable the interaction button, they are fed to the marker lost and found events
+    function onMarkerFound() {
+        interactionButtonDiv.style.visibility = "visible"
+        console.log("Marker Found!")
+    }
+
+    function onMarkerLost() {
+        interactionButtonDiv.style.visibility = "hidden"
+        console.log("Marker Lost!")
+    }
+
+    // markerFound and markerLost events are triggered on registering / losing tracking of the marker
+    faucetMarker.addEventListener("markerFound", onMarkerFound)
+    faucetMarker.addEventListener("markerLost", onMarkerLost)
+
+    // checks that circumstance are ripe for animation change; and does it if so, or not if not
+    function changeAnimationState() {
+        if (itIsTimeForChange()) {
+            currentNumberOfInteractions += 1
+            checkForSwitchToSignupUI()
+
+            animationState = animationStates[currentNumberOfInteractions]
+            // animationstate is 1 the first time the code reaches here
+            // ['IdleHigh', 'HighToOff', 'IdleOff']
+            document.getElementById("faucet-animation-model").setAttribute("animation-mixer", "clip: " + animationState)
+
+            // this addition is only useful because there is a single animation change before the thing is done animating.
+            document.getElementById("faucet-animation-model").setAttribute("animation-mixer","loop: once"); 
+            document.getElementById('water-sound').components.sound.stopSound();
+
+            console.log("Animation State now: " + animationState);
+        }
+    }
+
+    function itIsTimeForChange() {
+
+        const now = new Date().getTime()
+        // figuring out if enough time has passed between animations
+        const delta = now - lastAnimationChangeTime;
+        // do not launch change if too little time has passed, or too enough interactions have been registered.
+        if (delta < minimumTimeBetweenAnimationChange ||
+            currentNumberOfInteractions >= requiredNumberOfInteractions) {
+            console.log("Now " + now + "\nDelta " + delta + "\nYou're too quick! Could not change animation.")
+            return false
+        }
+        lastAnimationChangeTime = now // updating time counter
+
+        return true
+    }
+
+    function checkForSwitchToSignupUI() {
+        if (currentNumberOfInteractions >= requiredNumberOfInteractions) {
+            document.getElementById("signup-buttondiv").style.visibility = "visible" // set signup button visible
+            faucetMarker.removeEventListener("markerFound", onMarkerFound) // make interaction button not appear again
+            onMarkerLost() // make interaction button invisible
+        }
+    }
+
+
+</script>
+</body>
 </html>
+
+<!--Code for VRDK by KCN-->
+
+<!--Inspiration: https://jsfiddle.net/6p0r36bL/4/ -->
+<!--AFrame Components:-->
+<!--https://aframe.io/docs/1.2.0/introduction/writing-a-component.html-->
+<!--https://aframe.io/docs/1.2.0/core/component.html-->
