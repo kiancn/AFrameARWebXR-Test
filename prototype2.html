@@ -153,13 +153,13 @@
         <a-entity faucet
                   id="faucet-animation"
                   position='0 0.5 0.5'
-                  scale="1 1 1"
+                  scale="0.2 0.2 0.2"
                   rotation="180 90 -90">
 
             <a-entity modify-mat water
                       id="faucet-animation-model"
                       gltf-model="#faucet-anim"
-                      animation-mixer="clip: IdleHigh; loop: once; clampWhenFinished: true"
+                      animation-mixer="clip: IdleHigh; loop: repeat; clampWhenFinished: true"
                       gltf-morph="morphtarget: Low;value: 0">
             </a-entity>
 
@@ -198,10 +198,10 @@
     // the getting of document elements will not work unless id of the element requested has been defined.
 
     let minimumTimeBetweenAnimationChange = 1350;
-    let requiredNumberOfInteractions = 3;
+    let requiredNumberOfInteractions = 1;
     let currentNumberOfInteractions = 0;
     let animationState = "IdleHigh"; // other option is Close
-    let animationStates = ['IdleHigh', 'HighToMedium', 'MediumToLow', 'LowToOff', 'IdleOff']
+    let animationStates = ['IdleHigh', 'HighToOff', 'IdleOff']
     let lastAnimationChangeTime = new Date().getTime()
 
     let faucetMarker = document.getElementById("faucetmarker");
@@ -230,8 +230,11 @@
 
             animationState = animationStates[currentNumberOfInteractions]
             // animationstate is 1 the first time the code reaches here
-            // ['IdleHigh', 'HighToMedium', 'MediumToLow', 'LowToOff', 'IdleOff']
+            // ['IdleHigh', 'HighToOff', 'IdleOff']
             document.getElementById("faucet-animation-model").setAttribute("animation-mixer", "clip: " + animationState)
+
+            // this addition is only useful because there is a single animation change before the thing is done animating.
+            document.getElementById("faucet-animation-model").setAttribute("animation-mixer","loop: once"); 
 
             console.log("Animation State now: " + animationState);
         }
