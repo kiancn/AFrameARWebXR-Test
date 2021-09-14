@@ -228,7 +228,7 @@
 </div>
 
 <div class="info-box-div">
-    <div class="bordered-box">
+    <div class="bordered-box" id="info-box">
         <h1 style="background-color: #81DB65; color: aliceblue;">SCAN PLAKATEN MED KAMERAET</h1>
     </div>
 </div>
@@ -246,11 +246,14 @@
 
     let faucetMarker = document.getElementById("faucetmarker");
     let interactionButtonDiv = document.getElementById("interaction-buttondiv");
+    let infoBoxDiv = document.getElementById("info-box");
 
     // next two functions en- and disable the interaction button, they are fed to the marker lost and found events
     function onMarkerFound() {
         interactionButtonDiv.style.visibility = "visible"
+        infoBoxDiv.style.visibility = "hidden"
         console.log("Marker Found!")
+        
     }
 
     function onMarkerLost() {
