@@ -9,6 +9,10 @@
     <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.0.0/dist/aframe-extras.min.js"></script>
     <script src="https://rawcdn.githack.com/elbobo/aframe-gltf-morph-component/07e9b80bd382cc1c19223468d35c453e7c76e9a2/dist/aframe-gltf-morph-component.js"></script>
 
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.min.js" integrity="sha384-skAcpIdS7UcVUC05LJ9Dxay8AXcDYfBJqt1CJ85S/CFujBsIzCIv+l9liuYLaMQ/" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ" crossorigin="anonymous"></script>
 
     <style>
         .interaction-button-div {
@@ -24,7 +28,7 @@
         }
 
         .interaction-button {
-            background: rgba(132, 176, 232, 0.8);
+            background: rgba(90, 152, 233, 0.8);
             border: none;
             border-radius: 12px;
             color: white;
@@ -32,7 +36,8 @@
             text-align: center;
             text-decoration: none;
             display: inline-block;
-            font-size: 16px;
+            font-size: 22px;
+            font-family: Helvetica, sans-serif;
         }
 
         .signup-button-div {
@@ -56,7 +61,30 @@
             text-align: center;
             text-decoration: none;
             display: inline-block;
-            font-size: 26px;
+            font-size: 28px;
+            font-family: Helvetica, sans-serif;
+        }
+
+        .bordered-box{          
+            border: 30px solid #81DB65;                        
+            bottom:10px;            
+            z-index: 10;            
+            margin: auto;
+        }
+
+        .info-box-div {
+            border: 30px solid #81DB65;                        
+            position: absolute;
+            top:5%; 
+            bottom: 5%;
+            left: 0;
+            width: 100%;
+            height: 90%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            margin:auto;
         }
 
     </style>
@@ -182,17 +210,23 @@
 <!-- The following buttons are overlayed at relative positions on top of a-scene using css -->
 
 <div id="interaction-buttondiv" class="interaction-button-div" style="visibility: hidden;">
-    <button class="interaction-button" onclick="changeAnimationState();console.log('BANG')">
+    <button class="interaction-button button" onclick="changeAnimationState();console.log('BANG')">
         SKRU NED
     </button>
 </div>
 
 <div id="signup-buttondiv" class="signup-button-div" style="visibility: hidden;">
     <form action="https://www.hofor.dk/privat/spar-penge/kom-med-dit-bedste-sparetip">
-        <button class="signup-button" onclick="console.log('BANG')">
+        <button class="signup-button button" onclick="console.log('BANG')">
             SPAR OG VIND!
         </button>
     </form>
+</div>
+
+<div class="info-box-div">
+    <div class="bordered-box">
+        <h1>Testy test!</h1>
+    </div>
 </div>
 
 <script>
