@@ -8,6 +8,7 @@
     <script src="https://rawgit.com/mayognaise/aframe-mouse-cursor-component/master/dist/aframe-mouse-cursor-component.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.0.0/dist/aframe-extras.min.js"></script>
     <script src="https://rawcdn.githack.com/elbobo/aframe-gltf-morph-component/07e9b80bd382cc1c19223468d35c453e7c76e9a2/dist/aframe-gltf-morph-component.js"></script>
+  
 
     <!-- Bootstrap -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css"
@@ -33,10 +34,10 @@
         }
 
         .interaction-button {
-            background: rgba(90, 152, 233, 0.8);
+            background: rgba(237, 2, 140, 0.8);
             border: none;
             border-radius: 12px;
-            color: white;
+            color: aliceblue;
             padding: 15px 32px;
             text-align: center;
             text-decoration: none;
@@ -58,10 +59,10 @@
         }
 
         .signup-button {
-            background: rgba(12, 194, 42, 0.604);
+            background: rgba(214, 1, 76, 0.604);
             border: inset 20px rgba(255, 255, 255, 0.255);
             border-radius: 12px;
-            color: white;
+            color: aliceblue;
             padding: 15px 32px;
             text-align: center;
             text-decoration: none;
@@ -71,7 +72,7 @@
         }
 
         .bordered-box {
-            border: 5px solid #81DB65;
+            border: 5px solid #ED028C;
             top: 5%;
             bottom: 5%;
             left: 0;
@@ -183,7 +184,11 @@
                       response-type="arraybuffer"
                       src="Vandhane_metal2.gltf">
         </a-asset-item>
+       
         <a-sound id="water-sound" src="url(water_splatter.mp3)" autoplay="true"></a-sound>
+
+        <img id="steam-texture" src="steam.png">
+
     </a-assets>
 
     <a-marker type="pattern"
@@ -203,7 +208,51 @@
                       gltf-morph="morphtarget: Low;value: 0">
             </a-entity>
 
-        </a-entity>
+           <!-- Animationed Steam Sprites Section  -->
+
+            <a-image id="steam1" src="#steam-texture" material="opacity: 0.2" scale="1 1 1" rotation="0 90 0" position="2.1 -1.4 0"
+            animation__rotation="property: rotation; to: 0 90 360; loop: true; dur: 1000;"
+            animation__position=" property: position; to: 0 4.9 0.5; loop: true; dur: 3000"
+            animation__scale="property: scale; to: 0.1 0.1 0.1; loop: true; dur:3000;"
+            style="visibility: visible;">
+            </a-image>
+
+            <a-image id="steam2" src="#steam-texture" material="opacity: 0.2" scale="1 1 1" rotation="0 90 0" position="3.5 -1.4 0"
+            animation__rotation="property: rotation; to: 0 90 360; loop: true; dur: 2000;"
+            animation__position=" property: position; to: 3 3.9 1; loop: true; dur: 2000"
+            animation__scale="property: scale; to: 0.1 0.1 0.1; loop: true; dur:1000;"
+            style="visibility: visible;">
+            </a-image>
+
+            <a-image id="steam3" src="#steam-texture" material="opacity: 0.2" scale="1 1 1" rotation="0 90 0" position="1.6 -1.4 0"
+            animation__rotation="property: rotation; to: 0 90 360; loop: true; dur: 3000;"
+            animation__position=" property: position; to: 1 3.5 1.5; loop: true; dur: 1000"
+            animation__scale="property: scale; to: 0.1 0.1 0.1; loop: true; dur:1000;"
+            style="visibility: visible;">
+            </a-image>
+
+            <a-image id="steam4" src="#steam-texture" material="opacity: 0.2" scale="1 1 1" rotation="0 90 0" position="2.1 -1.4 0"
+            animation__rotation="property: rotation; to: 0 90 360; loop: true; dur: 1000;"
+            animation__position=" property: position; to: 4.0 4.3 -0.5; loop: true; dur: 3000"
+            animation__scale="property: scale; to: 0.1 0.1 0.1; loop: true; dur:1000;"
+            style="visibility: visible;">
+            </a-image>
+
+            <a-image id="steam5" src="#steam-texture" material="opacity: 0.2" scale="1 1 1" rotation="0 90 0" position="3.5 -1.4 0"
+            animation__rotation="property: rotation; to: 0 90 360; loop: true; dur: 2000;"
+            animation__position=" property: position; to: 3 5.9 -1; loop: true; dur: 2000"
+            animation__scale="property: scale; to: 0.1 0.1 0.1; loop: true; dur:1000;"
+            style="visibility: visible;">
+            </a-image>
+
+            <a-image id="steam6" src="#steam-texture" material="opacity: 0.2" scale="1 1 1" rotation="0 90 0" position="1.6 -1.4 0"
+            animation__rotation="property: rotation; to: 0 90 360; loop: true; dur: 3000;"
+            animation__position=" property: position; to: 1 4.3 0; loop: true; dur: 1000"
+            animation__scale="property: scale; to: 0.1 0.1 0.1; loop: true; dur:1000;"
+            style="visibility: visible;">
+            </a-image>
+
+        </a-entity>       
 
     </a-marker>
 
@@ -220,14 +269,15 @@
 <!-- The following buttons are overlayed at relative positions on top of a-scene using css -->
 
 <div id="interaction-buttondiv" class="interaction-button-div" style="visibility: hidden;">
-    <button class="interaction-button button" onclick="changeAnimationState();console.log('BANG')">
-        SKRU NED
+    <button class="interaction-button button" onclick="changeAnimationState();">
+       SLUK FOR
+       <br> DET VARME VAND</br>
     </button>
 </div>
 
 <div id="signup-buttondiv" class="signup-button-div" style="visibility: hidden;">
     <form action="https://www.hofor.dk/privat/spar-penge/kom-med-dit-bedste-sparetip">
-        <button class="signup-button button" onclick="console.log('BANG')">
+        <button class="signup-button button">
             SPAR OG VIND!
         </button>
     </form>
@@ -235,7 +285,8 @@
 
 <div class="info-box-div">
     <div class="bordered-box" id="info-box">
-        <h1 style="background-color: #81DB65; color: aliceblue;">SCAN PLAKATEN MED KAMERAET</h1>
+        <h1 style="background-color: #ED028C; color: aliceblue;">SCAN PLAKATEN MED KAMERAET</h1>
+        <img id="speaker-image" src="speaker_98x90_green.png" style="visibility: hidden;">
     </div>
 </div>
 
@@ -253,6 +304,10 @@
     let faucetMarker = document.getElementById("faucetmarker");
     let interactionButtonDiv = document.getElementById("interaction-buttondiv");
     let infoBoxDiv = document.getElementById("info-box");
+
+    let soundToPlay = new Audio("water_splatter.mp3")
+
+    let isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 
     // next two functions en- and disable the interaction button, they are fed to the marker lost and found events
     function onMarkerFound() {
@@ -284,9 +339,15 @@
 
             // this addition is only useful because there is a single animation change before the thing is done animating.
             document.getElementById("faucet-animation-model").setAttribute("animation-mixer", "loop: once");
-            document.getElementById('water-sound').components.sound.stopSound();
 
+            if(isSafari){            
+                soundToPlay.src = ""
+            } else {
+                document.getElementById('water-sound').components.sound.stopSound();
+            }
             // console.log("Animation State now: " + animationState);
+
+            
         }
     }
 
@@ -311,8 +372,67 @@
             document.getElementById("signup-buttondiv").style.visibility = "visible" // set signup button visible
             faucetMarker.removeEventListener("markerFound", onMarkerFound) // make interaction button not appear again
             onMarkerLost() // make interaction button invisible
+
+            // 'turn off steam' section
+
+            let steamElements = []
+
+            for(let i = 1; i < 7; i++){
+                steamElements.push(document.getElementById('steam'+i))
+            }
+            console.log(steamElements)
+
+            steamElements.forEach(element => {
+             //   element.style.visibility = 'hidden'
+             element.parentNode.removeChild(element)
+            });
         }
     }
+
+    window.addEventListener('load', function(){
+        // test if browser is safari
+        
+        console.log("isSafari = " + isSafari)
+
+
+        // if the page is being displayed on a safari based browser, enable microphone icon
+        if(isSafari){
+
+            let audioContext = new (window.AudioContext || window.webkitAudioContext)()
+
+            console.log(audioContext)
+
+            let speakerImage = document.getElementById("speaker-image")
+            speakerImage.style.visibility = 'visible'
+
+            window.addEventListener('click', function() {
+            
+            speakerImage.style.visibility = 'hidden'
+
+            // create empty buffer
+            let buffer = audioContext.createBuffer(1, 1, 22050);
+            let source = audioContext.createBufferSource();
+            source.buffer = buffer;
+
+            // connect to output (your speakers)
+            source.connect(audioContext.destination);
+
+            // play the file
+           // source.noteOn(0);
+
+            soundToPlay.play()
+
+            }, false);
+
+        }
+        // else
+        // {
+        //     soundToPlay.play()
+        //     console.log("Soundy sound")
+        // }
+    })
+
+
 
 </script>
 </body>
@@ -324,3 +444,8 @@
 <!--AFrame Components:-->
 <!--https://aframe.io/docs/1.2.0/introduction/writing-a-component.html-->
 <!--https://aframe.io/docs/1.2.0/core/component.html-->
+<!-- https://aframe.io/docs/1.2.0/primitives/a-image.html -->
+
+<!-- Source helping to play sound on iOS -->
+<!-- https://paulbakaus.com/tutorials/html5/web-audio-on-ios/ -->
+<!-- https://stackoverflow.com/questions/14834520/html5-audio-stop-function -->
