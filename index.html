@@ -307,7 +307,7 @@
 
     let soundToPlay = new Audio("water_splatter.mp3")
 
-    let isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+    let isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent); // regex tests if browser identifies as Safari
 
     // next two functions en- and disable the interaction button, they are fed to the marker lost and found events
     function onMarkerFound() {
@@ -339,15 +339,8 @@
 
             // this addition is only useful because there is a single animation change before the thing is done animating.
             document.getElementById("faucet-animation-model").setAttribute("animation-mixer", "loop: once");
-
-            if(isSafari){            
-                soundToPlay.src = ""
-            } else {
-                document.getElementById('water-sound').components.sound.stopSound();
-            }
-            // console.log("Animation State now: " + animationState);
-
-            
+         
+            // console.log("Animation State now: " + animationState);            
         }
     }
 
@@ -373,17 +366,21 @@
             faucetMarker.removeEventListener("markerFound", onMarkerFound) // make interaction button not appear again
             onMarkerLost() // make interaction button invisible
 
-            // 'turn off steam' section
+            // stop sound
+            if(isSafari){            
+                soundToPlay.src = ""
+            } else {
+                document.getElementById('water-sound').components.sound.stopSound();
+            }
 
+            // 'turn off steam' section
             let steamElements = []
 
-            for(let i = 1; i < 7; i++){
-                steamElements.push(document.getElementById('steam'+i))
+            for(let i = 1; i < 7; i++){ 
+                steamElements.push(document.getElementById('steam'+i)) 
             }
-            console.log(steamElements)
-
-            steamElements.forEach(element => {
-             //   element.style.visibility = 'hidden'
+            
+            steamElements.forEach(element => {            
              element.parentNode.removeChild(element)
             });
         }
@@ -392,8 +389,7 @@
     window.addEventListener('load', function(){
         // test if browser is safari
         
-        console.log("isSafari = " + isSafari)
-
+        // console.log("isSafari = " + isSafari)
 
         // if the page is being displayed on a safari based browser, enable microphone icon
         if(isSafari){
@@ -417,19 +413,11 @@
             // connect to output (your speakers)
             source.connect(audioContext.destination);
 
-            // play the file
-           // source.noteOn(0);
-
+            // play the file - the 
             soundToPlay.play()
 
             }, false);
-
         }
-        // else
-        // {
-        //     soundToPlay.play()
-        //     console.log("Soundy sound")
-        // }
     })
 
 
