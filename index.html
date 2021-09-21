@@ -2,6 +2,8 @@
 <html lang="en">
 
 <head>
+    <!-- These settings for the viewport ensures that cameras with  -->
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
     <script src="https://rawgit.com/jeromeetienne/AR.js/master/aframe/build/aframe-ar.min.js"></script>
@@ -313,7 +315,7 @@
 
 <div id="interaction-buttondiv" class="interaction-button-div" style="visibility: hidden;">
     <button class="interaction-button button" onclick="changeAnimationState();">
-       SLUK FOR
+       LUK FOR
        <br> DET VARME VAND</br>
     </button>
 </div>
@@ -335,7 +337,7 @@
 
 <script>
     // this portion of js is here, because despite the instructions from the AFrame documentation,
-    // the getting of document elements will not work unless id of the element requested has been defined.
+    // the getting of document elements will not work unless id of the element requested has been defined (duh).
 
     let minimumTimeBetweenAnimationChange = 1350;
     let requiredNumberOfInteractions = 1;
@@ -479,3 +481,6 @@
 <!-- https://paulbakaus.com/tutorials/html5/web-audio-on-ios/ -->
 <!-- https://stackoverflow.com/questions/14834520/html5-audio-stop-function -->
 <!-- https://stackoverflow.com/questions/53380400/aframe-smoothing-position-and-rotation -->
+
+<!-- Camera zoom problem -->
+<!-- https://github.com/jeromeetienne/AR.js/issues/369 -->
