@@ -1,16 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 
+<!-- Design-note: Program kept in single document format for the sake of reading flow, 
+    and because it is a single page interface with no repeat code elsewhere. -->
+
 <head>
-    <!-- These settings for the viewport ensures that cameras with  -->
+    <!-- These settings for the viewport ensures that cameras with some sort of browser-enabled automatic zoom -->
     <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
     <script src="https://rawgit.com/jeromeetienne/AR.js/master/aframe/build/aframe-ar.min.js"></script>
 
-    <!-- <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
-    <script src="https://raw.githack.com/AR-js-org/AR.js/master/three.js/build/ar.js"></script> -->
-
+    <!-- The out-commented import would enable registering of mouse-clicks, but this works very poorly with AFrame 1.0.0+ : kept for reference only  -->
     <!-- <script src="https://rawgit.com/mayognaise/aframe-mouse-cursor-component/master/dist/aframe-mouse-cursor-component.min.js"></script> -->
     <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.0.0/dist/aframe-extras.min.js"></script>
     <script src="https://rawcdn.githack.com/elbobo/aframe-gltf-morph-component/07e9b80bd382cc1c19223468d35c453e7c76e9a2/dist/aframe-gltf-morph-component.js"></script>
@@ -170,8 +171,8 @@
             }
         });
 
-        // Helps smooth the jittering of the position of object associated with the tracked pattern; aka the faucet. 
-        // The code is inherited from one of the creators of AR.js, and the best bet; but the jittering is still bad.
+        // Helps smooth the jittering of the position of object associated with the tracked pattern; aka the hand and the faucet. 
+        // The code is inherited from one of the creators of AR.js, and the best bet; but the jittering is just more smooth.
         AFRAME.registerComponent("smoothedobject", {
             init: function() {
                 this.target = document.querySelector('#faucet-animation'); // your video
@@ -208,6 +209,11 @@
                 }
             }
         })        
+
+        // This next section fixes a that happens when the browser loses focus
+
+        // Function makes sound stop when
+        
     </script>
 
     <title>HOFOR Vand og Varme Sparekonkurrence</title>
