@@ -5,7 +5,11 @@
 
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
     <script src="https://rawgit.com/jeromeetienne/AR.js/master/aframe/build/aframe-ar.min.js"></script>
-    <script src="https://rawgit.com/mayognaise/aframe-mouse-cursor-component/master/dist/aframe-mouse-cursor-component.min.js"></script>
+
+    <!-- <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/three.js/build/ar.js"></script> -->
+
+    <!-- <script src="https://rawgit.com/mayognaise/aframe-mouse-cursor-component/master/dist/aframe-mouse-cursor-component.min.js"></script> -->
     <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.0.0/dist/aframe-extras.min.js"></script>
     <script src="https://rawcdn.githack.com/elbobo/aframe-gltf-morph-component/07e9b80bd382cc1c19223468d35c453e7c76e9a2/dist/aframe-gltf-morph-component.js"></script>
   
@@ -163,6 +167,45 @@
                 });
             }
         });
+
+        // Helps smooth the jittering of the position of object associated with the tracked pattern; aka the faucet. 
+        // The code is inherited from one of the creators of AR.js, and the best bet; but the jittering is still bad.
+        AFRAME.registerComponent("smoothedobject", {
+            init: function() {
+                this.target = document.querySelector('#faucet-animation'); // your video
+                this.prevPosition = null; // initially there is no position or rotation
+                this.prevRotation = null;
+            },
+
+            tick: function() {
+                if (this.el.object3D.visible) {
+               //this.target.setAttribute('visible', 'true')
+    
+                if(!this.prevPosition && !this.prevRotation) { 
+                    // there are no values to lerp from - set the initial values
+                    this.target.setAttribute('position', this.el.getAttribute('position'))
+                    this.target.setAttribute('rotation', this.el.getAttribute('rotation'))
+                } else {
+                    // use the previous values to get an approximation 
+                    this.target.object3D.position.lerp(this.prevPosition, 0.1)
+
+                    // this (below) may seem ugly, but the rotation is a euler, not a THREE.Vector3, 
+                    // so to use the lerp function i'm doing some probably unnecessary conversions
+                    let rot = this.target.object3D.rotation.toVector3().lerp(this.prevRotation, 0.1)
+                    this.target.object3D.rotation.setFromVector3(rot)
+                }
+                // update the values
+                this.prevPosition = this.el.object3D.position
+                this.prevRotation = this.el.object3D.rotation
+               }
+                 else {
+                // the marker dissapeared - reset the values
+                // this.target.setAttribute('visible', 'false')
+                this.prevPosition = null;
+                this.prevRotation = null;
+                }
+            }
+        })        
     </script>
 
     <title>HOFOR Vand og Varme Sparekonkurrence</title>
@@ -195,7 +238,7 @@
               url="pattern-HoforHandPhone0914.patt"
               id="faucetmarker">
 
-        <a-entity faucet
+        <a-entity faucet smoothedobject
                   id="faucet-animation"
                   position='0 0.5 0.5'
                   scale="0.2 0.2 0.2"
@@ -212,42 +255,42 @@
 
             <a-image id="steam1" src="#steam-texture" material="opacity: 0.2" scale="1 1 1" rotation="0 90 0" position="2.1 -1.4 0"
             animation__rotation="property: rotation; to: 0 90 360; loop: true; dur: 1000;"
-            animation__position=" property: position; to: 0 4.9 0.5; loop: true; dur: 3000"
+            animation__position="property: position; to: 0 4.9 0.5; loop: true; dur: 3000"
             animation__scale="property: scale; to: 0.1 0.1 0.1; loop: true; dur:3000;"
             style="visibility: visible;">
             </a-image>
 
             <a-image id="steam2" src="#steam-texture" material="opacity: 0.2" scale="1 1 1" rotation="0 90 0" position="3.5 -1.4 0"
             animation__rotation="property: rotation; to: 0 90 360; loop: true; dur: 2000;"
-            animation__position=" property: position; to: 3 3.9 1; loop: true; dur: 2000"
+            animation__position="property: position; to: 3 3.9 1; loop: true; dur: 2000"
             animation__scale="property: scale; to: 0.1 0.1 0.1; loop: true; dur:1000;"
             style="visibility: visible;">
             </a-image>
 
             <a-image id="steam3" src="#steam-texture" material="opacity: 0.2" scale="1 1 1" rotation="0 90 0" position="1.6 -1.4 0"
             animation__rotation="property: rotation; to: 0 90 360; loop: true; dur: 3000;"
-            animation__position=" property: position; to: 1 3.5 1.5; loop: true; dur: 1000"
+            animation__position="property: position; to: 1 3.5 1.5; loop: true; dur: 1000"
             animation__scale="property: scale; to: 0.1 0.1 0.1; loop: true; dur:1000;"
             style="visibility: visible;">
             </a-image>
 
             <a-image id="steam4" src="#steam-texture" material="opacity: 0.2" scale="1 1 1" rotation="0 90 0" position="2.1 -1.4 0"
             animation__rotation="property: rotation; to: 0 90 360; loop: true; dur: 1000;"
-            animation__position=" property: position; to: 4.0 4.3 -0.5; loop: true; dur: 3000"
+            animation__position="property: position; to: 4.0 4.3 -0.5; loop: true; dur: 3000"
             animation__scale="property: scale; to: 0.1 0.1 0.1; loop: true; dur:1000;"
             style="visibility: visible;">
             </a-image>
 
             <a-image id="steam5" src="#steam-texture" material="opacity: 0.2" scale="1 1 1" rotation="0 90 0" position="3.5 -1.4 0"
             animation__rotation="property: rotation; to: 0 90 360; loop: true; dur: 2000;"
-            animation__position=" property: position; to: 3 5.9 -1; loop: true; dur: 2000"
+            animation__position="property: position; to: 3 5.9 -1; loop: true; dur: 2000"
             animation__scale="property: scale; to: 0.1 0.1 0.1; loop: true; dur:1000;"
             style="visibility: visible;">
             </a-image>
 
             <a-image id="steam6" src="#steam-texture" material="opacity: 0.2" scale="1 1 1" rotation="0 90 0" position="1.6 -1.4 0"
             animation__rotation="property: rotation; to: 0 90 360; loop: true; dur: 3000;"
-            animation__position=" property: position; to: 1 4.3 0; loop: true; dur: 1000"
+            animation__position="property: position; to: 1 4.3 0; loop: true; dur: 1000"
             animation__scale="property: scale; to: 0.1 0.1 0.1; loop: true; dur:1000;"
             style="visibility: visible;">
             </a-image>
@@ -387,10 +430,8 @@
     }
 
     window.addEventListener('load', function(){
-        // test if browser is safari
-        
+        // test if browser is safari        
         // console.log("isSafari = " + isSafari)
-
         // if the page is being displayed on a safari based browser, enable microphone icon
         if(isSafari){
 
@@ -403,18 +444,18 @@
 
             window.addEventListener('click', function() {
             
-            speakerImage.style.visibility = 'hidden'
+                speakerImage.style.visibility = 'hidden'
 
-            // create empty buffer
-            let buffer = audioContext.createBuffer(1, 1, 22050);
-            let source = audioContext.createBufferSource();
-            source.buffer = buffer;
+                // create empty buffer
+                let buffer = audioContext.createBuffer(1, 1, 22050);
+                let source = audioContext.createBufferSource();
+                source.buffer = buffer;
 
-            // connect to output (your speakers)
-            source.connect(audioContext.destination);
+                // connect to output (your speakers)
+                source.connect(audioContext.destination);
 
-            // play the file - the 
-            soundToPlay.play()
+                // play the file - initialized above
+                soundToPlay.play()
 
             }, false);
         }
@@ -437,3 +478,4 @@
 <!-- Source helping to play sound on iOS -->
 <!-- https://paulbakaus.com/tutorials/html5/web-audio-on-ios/ -->
 <!-- https://stackoverflow.com/questions/14834520/html5-audio-stop-function -->
+<!-- https://stackoverflow.com/questions/53380400/aframe-smoothing-position-and-rotation -->
