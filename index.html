@@ -15,7 +15,7 @@
     <!-- <script src="https://rawgit.com/mayognaise/aframe-mouse-cursor-component/master/dist/aframe-mouse-cursor-component.min.js"></script> -->
     <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.0.0/dist/aframe-extras.min.js"></script>
     <script src="https://rawcdn.githack.com/elbobo/aframe-gltf-morph-component/07e9b80bd382cc1c19223468d35c453e7c76e9a2/dist/aframe-gltf-morph-component.js"></script>
-  
+
 
     <!-- Bootstrap -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css"
@@ -171,49 +171,45 @@
             }
         });
 
-        // Helps smooth the jittering of the position of object associated with the tracked pattern; aka the hand and the faucet. 
-        // The code is inherited from one of the creators of AR.js, and the best bet; but the jittering is just more smooth.
+        // Helps smooth the jittering of the position of object associated with the tracked pattern; aka the faucet and the hand.
+        // The code is inherited/morphed from one of the creators of AR.js, and the best bet; but the jittering is just more smooth.
         AFRAME.registerComponent("smoothedobject", {
-            init: function() {
+            init: function () {
                 this.target = document.querySelector('#faucet-animation'); // your video
                 this.prevPosition = null; // initially there is no position or rotation
                 this.prevRotation = null;
             },
 
-            tick: function() {
+            tick: function () {
                 if (this.el.object3D.visible) {
-               //this.target.setAttribute('visible', 'true')
-    
-                if(!this.prevPosition && !this.prevRotation) { 
-                    // there are no values to lerp from - set the initial values
-                    this.target.setAttribute('position', this.el.getAttribute('position'))
-                    this.target.setAttribute('rotation', this.el.getAttribute('rotation'))
-                } else {
-                    // use the previous values to get an approximation 
-                    this.target.object3D.position.lerp(this.prevPosition, 0.1)
+                    //this.target.setAttribute('visible', 'true')
 
-                    // this (below) may seem ugly, but the rotation is a euler, not a THREE.Vector3, 
-                    // so to use the lerp function i'm doing some probably unnecessary conversions
-                    let rot = this.target.object3D.rotation.toVector3().lerp(this.prevRotation, 0.1)
-                    this.target.object3D.rotation.setFromVector3(rot)
-                }
-                // update the values
-                this.prevPosition = this.el.object3D.position
-                this.prevRotation = this.el.object3D.rotation
-               }
-                 else {
-                // the marker dissapeared - reset the values
-                // this.target.setAttribute('visible', 'false')
-                this.prevPosition = null;
-                this.prevRotation = null;
+                    if (!this.prevPosition && !this.prevRotation) {
+                        // there are no values to lerp from - set the initial values
+                        this.target.setAttribute('position', this.el.getAttribute('position'))
+                        this.target.setAttribute('rotation', this.el.getAttribute('rotation'))
+                    } else {
+                        // use the previous values to get an approximation
+                        this.target.object3D.position.lerp(this.prevPosition, 0.1)
+
+                        // this (below) may seem ugly, but the rotation is a euler, not a THREE.Vector3,
+                        // so to use the lerp function i'm doing some probably unnecessary conversions
+                        let rot = this.target.object3D.rotation.toVector3().lerp(this.prevRotation, 0.1)
+                        this.target.object3D.rotation.setFromVector3(rot)
+                    }
+                    // update the values
+                    this.prevPosition = this.el.object3D.position
+                    this.prevRotation = this.el.object3D.rotation
+                } else {
+                    // the marker dissapeared - reset the values
+                    // this.target.setAttribute('visible', 'false')
+                    this.prevPosition = null;
+                    this.prevRotation = null;
                 }
             }
-        })        
+        })
 
-        // This next section fixes a that happens when the browser loses focus
 
-        // Function makes sound stop when
-        
     </script>
 
     <title>HOFOR Vand og Varme Sparekonkurrence</title>
@@ -228,14 +224,14 @@
          loading-screen="dotsColor: red; backgroundColor: black"
          vr-mode-ui="enabled: false"
          device-orientation-permission-ui="enabled: false">
-         <!-- for detection of barcodes:  detectionMode: mono_and_matrix; matrixCodeType: 3x3; -->
+    <!-- for detection of barcodes:  detectionMode: mono_and_matrix; matrixCodeType: 3x3; -->
 
     <a-assets timeout="60000">
         <a-asset-item id="faucet-anim"
                       response-type="arraybuffer"
                       src="Vandhane_metal2.gltf">
         </a-asset-item>
-       
+
         <a-sound id="water-sound" src="url(water_splatter.mp3)" autoplay="true"></a-sound>
 
         <img id="steam-texture" src="steam.png">
@@ -259,57 +255,59 @@
                       gltf-morph="morphtarget: Low;value: 0">
             </a-entity>
 
-           <!-- Animationed Steam Sprites Section  -->
+            <!-- Animationed Steam Sprites Section  -->
 
-            <a-image id="steam1" src="#steam-texture" material="opacity: 0.2" scale="1 1 1" rotation="0 90 0" position="2.1 -1.4 0"
-            animation__rotation="property: rotation; to: 0 90 360; loop: true; dur: 1000;"
-            animation__position="property: position; to: 0 4.9 0.5; loop: true; dur: 3000"
-            animation__scale="property: scale; to: 0.1 0.1 0.1; loop: true; dur:3000;"
-            style="visibility: visible;">
+            <a-image id="steam1" src="#steam-texture" material="opacity: 0.2" scale="1 1 1" rotation="0 90 0"
+                     position="2.1 -1.4 0"
+                     animation__rotation="property: rotation; to: 0 90 360; loop: true; dur: 1000;"
+                     animation__position="property: position; to: 0 4.9 0.5; loop: true; dur: 3000"
+                     animation__scale="property: scale; to: 0.1 0.1 0.1; loop: true; dur:3000;"
+                     style="visibility: visible;">
             </a-image>
 
-            <a-image id="steam2" src="#steam-texture" material="opacity: 0.2" scale="1 1 1" rotation="0 90 0" position="3.5 -1.4 0"
-            animation__rotation="property: rotation; to: 0 90 360; loop: true; dur: 2000;"
-            animation__position="property: position; to: 3 3.9 1; loop: true; dur: 2000"
-            animation__scale="property: scale; to: 0.1 0.1 0.1; loop: true; dur:1000;"
-            style="visibility: visible;">
+            <a-image id="steam2" src="#steam-texture" material="opacity: 0.2" scale="1 1 1" rotation="0 90 0"
+                     position="3.5 -1.4 0"
+                     animation__rotation="property: rotation; to: 0 90 360; loop: true; dur: 2000;"
+                     animation__position="property: position; to: 3 3.9 1; loop: true; dur: 2000"
+                     animation__scale="property: scale; to: 0.1 0.1 0.1; loop: true; dur:1000;"
+                     style="visibility: visible;">
             </a-image>
 
-            <a-image id="steam3" src="#steam-texture" material="opacity: 0.2" scale="1 1 1" rotation="0 90 0" position="1.6 -1.4 0"
-            animation__rotation="property: rotation; to: 0 90 360; loop: true; dur: 3000;"
-            animation__position="property: position; to: 1 3.5 1.5; loop: true; dur: 1000"
-            animation__scale="property: scale; to: 0.1 0.1 0.1; loop: true; dur:1000;"
-            style="visibility: visible;">
+            <a-image id="steam3" src="#steam-texture" material="opacity: 0.2" scale="1 1 1" rotation="0 90 0"
+                     position="1.6 -1.4 0"
+                     animation__rotation="property: rotation; to: 0 90 360; loop: true; dur: 3000;"
+                     animation__position="property: position; to: 1 3.5 1.5; loop: true; dur: 1000"
+                     animation__scale="property: scale; to: 0.1 0.1 0.1; loop: true; dur:1000;"
+                     style="visibility: visible;">
             </a-image>
 
-            <a-image id="steam4" src="#steam-texture" material="opacity: 0.2" scale="1 1 1" rotation="0 90 0" position="2.1 -1.4 0"
-            animation__rotation="property: rotation; to: 0 90 360; loop: true; dur: 1000;"
-            animation__position="property: position; to: 4.0 4.3 -0.5; loop: true; dur: 3000"
-            animation__scale="property: scale; to: 0.1 0.1 0.1; loop: true; dur:1000;"
-            style="visibility: visible;">
+            <a-image id="steam4" src="#steam-texture" material="opacity: 0.2" scale="1 1 1" rotation="0 90 0"
+                     position="2.1 -1.4 0"
+                     animation__rotation="property: rotation; to: 0 90 360; loop: true; dur: 1000;"
+                     animation__position="property: position; to: 4.0 4.3 -0.5; loop: true; dur: 3000"
+                     animation__scale="property: scale; to: 0.1 0.1 0.1; loop: true; dur:1000;"
+                     style="visibility: visible;">
             </a-image>
 
-            <a-image id="steam5" src="#steam-texture" material="opacity: 0.2" scale="1 1 1" rotation="0 90 0" position="3.5 -1.4 0"
-            animation__rotation="property: rotation; to: 0 90 360; loop: true; dur: 2000;"
-            animation__position="property: position; to: 3 5.9 -1; loop: true; dur: 2000"
-            animation__scale="property: scale; to: 0.1 0.1 0.1; loop: true; dur:1000;"
-            style="visibility: visible;">
+            <a-image id="steam5" src="#steam-texture" material="opacity: 0.2" scale="1 1 1" rotation="0 90 0"
+                     position="3.5 -1.4 0"
+                     animation__rotation="property: rotation; to: 0 90 360; loop: true; dur: 2000;"
+                     animation__position="property: position; to: 3 5.9 -1; loop: true; dur: 2000"
+                     animation__scale="property: scale; to: 0.1 0.1 0.1; loop: true; dur:1000;"
+                     style="visibility: visible;">
             </a-image>
 
-            <a-image id="steam6" src="#steam-texture" material="opacity: 0.2" scale="1 1 1" rotation="0 90 0" position="1.6 -1.4 0"
-            animation__rotation="property: rotation; to: 0 90 360; loop: true; dur: 3000;"
-            animation__position="property: position; to: 1 4.3 0; loop: true; dur: 1000"
-            animation__scale="property: scale; to: 0.1 0.1 0.1; loop: true; dur:1000;"
-            style="visibility: visible;">
+            <a-image id="steam6" src="#steam-texture" material="opacity: 0.2" scale="1 1 1" rotation="0 90 0"
+                     position="1.6 -1.4 0"
+                     animation__rotation="property: rotation; to: 0 90 360; loop: true; dur: 3000;"
+                     animation__position="property: position; to: 1 4.3 0; loop: true; dur: 1000"
+                     animation__scale="property: scale; to: 0.1 0.1 0.1; loop: true; dur:1000;"
+                     style="visibility: visible;">
             </a-image>
 
-        </a-entity>       
+        </a-entity>
 
     </a-marker>
-
-<!--    <a-entity cursor="fuse: true; fuseTimeout: 15000;"-->
-<!--              position="0 0 -1">-->
-<!--    </a-entity>-->
 
     <a-entity camera
               look-controls="enabled: false">
@@ -321,8 +319,8 @@
 
 <div id="interaction-buttondiv" class="interaction-button-div" style="visibility: hidden;">
     <button class="interaction-button button" onclick="changeAnimationState();">
-       LUK FOR
-       <br> DET VARME VAND</br>
+        LUK FOR
+        <br> DET VARME VAND</br>
     </button>
 </div>
 
@@ -338,6 +336,9 @@
     <div class="bordered-box" id="info-box">
         <h1 style="background-color: #ED028C; color: aliceblue;">SCAN PLAKATEN MED KAMERAET</h1>
         <img id="speaker-image" src="speaker_98x90_green.png" style="visibility: hidden;">
+
+        <div id="" style="z-index: 0;">Where you at?</div>
+
     </div>
 </div>
 
@@ -359,6 +360,7 @@
     let soundToPlay = new Audio("water_splatter.mp3")
 
     let isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent); // regex tests if browser identifies as Safari
+
 
     // next two functions en- and disable the interaction button, they are fed to the marker lost and found events
     function onMarkerFound() {
@@ -390,7 +392,7 @@
 
             // this addition is only useful because there is a single animation change before the thing is done animating.
             document.getElementById("faucet-animation-model").setAttribute("animation-mixer", "loop: once");
-         
+
             // console.log("Animation State now: " + animationState);            
         }
     }
@@ -418,7 +420,7 @@
             onMarkerLost() // make interaction button invisible
 
             // stop sound
-            if(isSafari){            
+            if (isSafari) {
                 soundToPlay.src = ""
             } else {
                 document.getElementById('water-sound').components.sound.stopSound();
@@ -427,21 +429,35 @@
             // 'turn off steam' section
             let steamElements = []
 
-            for(let i = 1; i < 7; i++){ 
-                steamElements.push(document.getElementById('steam'+i)) 
+            for (let i = 1; i < 7; i++) {
+                steamElements.push(document.getElementById('steam' + i))
             }
-            
-            steamElements.forEach(element => {            
-             element.parentNode.removeChild(element)
+
+            steamElements.forEach(element => {
+                element.parentNode.removeChild(element)
             });
         }
     }
 
-    window.addEventListener('load', function(){
+    function loadandplaysoundforsafari() {
+
+        // create empty buffer
+        let buffer = audioContext.createBuffer(1, 1, 22050);
+        let source = audioContext.createBufferSource();
+        source.buffer = buffer;
+
+        // connect to output (your speakers)
+        source.connect(audioContext.destination);
+
+        // play the file - initialized above
+        soundToPlay.play()
+    }
+
+    window.addEventListener('load', function () {
         // test if browser is safari        
         // console.log("isSafari = " + isSafari)
         // if the page is being displayed on a safari based browser, enable microphone icon
-        if(isSafari){
+        if (isSafari) {
 
             let audioContext = new (window.AudioContext || window.webkitAudioContext)()
 
@@ -450,29 +466,41 @@
             let speakerImage = document.getElementById("speaker-image")
             speakerImage.style.visibility = 'visible'
 
-            window.addEventListener('click', function() {
-            
+            window.addEventListener('click', function () {
                 speakerImage.style.visibility = 'hidden'
-
-                // create empty buffer
-                let buffer = audioContext.createBuffer(1, 1, 22050);
-                let source = audioContext.createBufferSource();
-                source.buffer = buffer;
-
-                // connect to output (your speakers)
-                source.connect(audioContext.destination);
-
-                // play the file - initialized above
-                soundToPlay.play()
-
+                loadandplaysoundforsafari()
             }, false);
         }
     })
 
+    // This next section fixes a that happens when the browser loses focus
 
+    // makes sound stop when viewport/a-scene loses focus:
+    // the idea is to add listener-functions to the events of the window object
+    // onblur fires when window loses focus, onfocus when it gains it.
 
+    window.onblur = () => {
+        console.log("focus was lost")
+
+        if (isSafari) {
+            soundToPlay.src = ""
+        } else {
+            document.getElementById('water-sound').components.sound.stopSound();
+        }
+    }
+    window.onfocus = () => {
+        console.log("focus gained")
+
+        if (isSafari) {
+            loadandplaysoundforsafari()
+        } else {
+            document.getElementById('water-sound').components.sound.playSound();
+        }
+    }
 </script>
+
 </body>
+
 </html>
 
 <!--Code for VRDK by KCN and FH -->
