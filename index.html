@@ -414,14 +414,15 @@
              return
              } 
 
-        //if browser incompa
-        // 1 stopping sound
-        stopSoundNow()
+        // if browser incompatible       
 
         // 2 activating error message
         errorBox.style.visibility = "visible"
 
-        document.getElementById("error-message").innerText = "OS: " + osName + ". Browser: " + browserName
+        // removing a-scene from the mix
+        document.getElementById("body").removeChild(document.getElementById("scene"))
+
+       // document.getElementById("error-message").innerText = "OS: " + osName + ". Browser: " + browserName
     }
 
     // next two functions en- and disable the interaction button, they are fed to the marker lost and found events
