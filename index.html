@@ -397,7 +397,7 @@
 
     function checkforbrowsercompatibility(){
         if(osName.indexOf("Android")>-1 && browserName.indexOf("Chrome")>-1){return true}
-        if(osName.indexOf("Android")>-1 && browserName.indexOf("Firefox")>-1){return true}
+      //  if(osName.indexOf("Android")>-1 && browserName.indexOf("Firefox")>-1){return true}
         if(osName.indexOf("iOS")>-1 && browserName.indexOf("Safari")>-1){return true}
         if(osName.indexOf("Windows")>-1&&(browserName.indexOf("Chrome")>-1||browserName.indexOf("Firefox")>-1|| browserName.indexOf("Edge")>-1)){return true}
 
@@ -553,7 +553,8 @@
             let EdgeAgent = userAgentString.indexOf("Edg") > -1
             let firefoxAgent = userAgentString.indexOf("Firefox") > -1
             let safariAgent = userAgentString.indexOf("Safari") > -1
-            let operaAgent = userAgentString.indexOf("OP") > -1;
+            let operaAgent = userAgentString.indexOf("OP") > -1
+            let samsungAgent = userAgentString.indexOf("Samsung") >-1
 
              // Discard Safari since it also matches Chrome
              if ((chromeAgent) && (safariAgent)) { safariAgent = false; }
@@ -573,6 +574,7 @@
             // console.log("Opera agent: " + operaAgent)
            
              // return the currently used browser
+            if(samsungAgent){return "Samsung"}
             if(firefoxAgent){return "Firefox"}
             if(IExplorerAgent){return "IExplorer"}  
             if(EdgeAgent){return "Edge"}          
