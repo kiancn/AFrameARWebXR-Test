@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script src="https://rawgit.com/jeromeetienne/AR.js/master/aframe/build/aframe-ar.min.js"></script>
+    <script src="https://rawgit.com/mayognaise/aframe-mouse-cursor-component/master/dist/aframe-mouse-cursor-component.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.0.0/dist/aframe-extras.min.js"></script>
+    <script src="https://rawcdn.githack.com/elbobo/aframe-gltf-morph-component/07e9b80bd382cc1c19223468d35c453e7c76e9a2/dist/aframe-gltf-morph-component.js"></script>
+  
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css"
+          integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.min.js"
+            integrity="sha384-skAcpIdS7UcVUC05LJ9Dxay8AXcDYfBJqt1CJ85S/CFujBsIzCIv+l9liuYLaMQ/"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ"
+            crossorigin="anonymous"></script>
+
+    <style>
+        .interaction-button-div {
+            position: absolute;
+            bottom: 15%;
+            left: 0;
+            width: 100%;
+            height: 5em;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .interaction-button {
+            background: rgba(237, 2, 140, 0.8);
+            border: none;
+            border-radius: 12px;
+            color: aliceblue;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 22px;
+            font-family: Helvetica, sans-serif;
+        }
+
+        .signup-button-div {
+            position: absolute;
+            bottom: 6.8%;
+            left: 0;
+            width: 100%;
+            height: 6em;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .signup-button {
+            background: rgba(214, 1, 76, 0.604);
+            border: inset 20px rgba(255, 255, 255, 0.255);
+            border-radius: 12px;
+            color: aliceblue;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 28px;
+            font-family: Helvetica, sans-serif;
+        }
+
+        .bordered-box {
+            border: 5px solid #ED028C;
+            top: 5%;
+            bottom: 5%;
+            left: 0;
+            width: 90%;
+            height: 90%;
+            z-index: 9;
+            margin: auto;
+            text-align: center;
+        }
+
+        .info-box-div {
+            position: absolute;
+            top: 5%;
+            bottom: 5%;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9;
+            margin: auto;
+        }
+
+    </style>
+
+    <script>
+        // Registering components in AFrame is done like this; the 1st argument string defines the name a new attribute,
+        // which can then be declared directly in the html.
+        // It has to be done before the reading of the a-scene.
+
+        // Faucet registered to detect a-frame custom click event (now not in use; but good for reference, does no harm)
+        // needed for cursor clicks to register (those are also commented out now)
+        AFRAME.registerComponent("faucet", {
+            init: function () {
+                this.el.addEventListener("click", (e) => {
+                    // enable to have an automatic count-down (clicking is automatic for some dang reason)
+                    // changeAnimationState()
+                })
+            }
+        })
+
+        // The next two function calls declare some small but important changes to the faucet.
+        // Function sets the opacity of the material of the water part of the loaded faucet model
+        AFRAME.registerComponent('water', {
+            init: function () {
+                // console.log("Init water");
+                // Wait for model to load.
+                this.el.addEventListener('model-loaded', () => {
+                    // Grab the mesh / scene.
+                    let mesh = this.el.getObject3D('mesh');
+                    // Go over the submeshes and modify materials we want.
+                    mesh.traverse(node => {
+                        if (node.name == 'wTube006') {
+                            node.material.opacity = 0.5;
+                        }
+                    });
+                });
+            }
+        });
+
+        // this function enables 'environment/skybox/cubemap reflections' on the model
+        AFRAME.registerComponent("modify-mat", {
+            init: function () {
+                let targetCube = new THREE.WebGLRenderTargetCube(512, 512);
+                let renderer = this.el.sceneEl.renderer;
+                renderer.toneMapping = THREE.ACESFilmicToneMapping;
+                renderer.toneMappingExposure = 0.5;
+                renderer.outputEncoding = THREE.sRGBEncoding;
+
+                // fire an event when the model has loaded
+                this.el.addEventListener("model-loaded", e => {
+                    let mesh = this.el.getObject3D("mesh");
+                    // load environment map to object's material's evnMap property.
+                    let texture = new THREE.TextureLoader().load(
+                        "comfy_cafe_1k.png",
+                        function () {
+                            let cubeTex = targetCube.fromEquirectangularTexture(renderer, texture);
+                            mesh.traverse(function (el) {
+                                if (el.material) {
+                                    el.material.envMap = cubeTex.texture;
+                                    el.material.envMap.intensity = 1;
+                                    el.material.needsUpdate = true;
+                                }
+                            });
+                        }
+                    );
+                });
+            }
+        });
+        // code helps 
+        AFRAME.registerComponent("smoothedobject", {
+            init: function() {
+                this.target = document.querySelector('#faucet-animation'); // your video
+                this.prevPosition = null; // initially there is no position or rotation
+                this.prevRotation = null;
+            },
+
+            tick: function() {
+                if (this.el.object3D.visible) {
+               //this.target.setAttribute('visible', 'true')
+    
+                if(!this.prevPosition && !this.prevRotation) { 
+                    // there are no values to lerp from - set the initial values
+                    this.target.setAttribute('position', this.el.getAttribute('position'))
+                    this.target.setAttribute('rotation', this.el.getAttribute('rotation'))
+                } else {
+                    // use the previous values to get an approximation 
+                    this.target.object3D.position.lerp(this.prevPosition, 0.1)
+
+                    // this (below) may seem ugly, but the rotation is a euler, not a THREE.Vector3, 
+                    // so to use the lerp function i'm doing some probably unnecessary conversions
+                    let rot = this.target.object3D.rotation.toVector3().lerp(this.prevRotation, 0.1)
+                    this.target.object3D.rotation.setFromVector3(rot)
+                }
+                // update the values
+                this.prevPosition = this.el.object3D.position
+                this.prevRotation = this.el.object3D.rotation
+               }
+                 else {
+                // the marker dissapeared - reset the values
+                // this.target.setAttribute('visible', 'false')
+                this.prevPosition = null;
+                this.prevRotation = null;
+                }
+            }
+        })        
+    </script>
+
+    <title>HOFOR Vand og Varme Sparekonkurrence</title>
+</head>
+<body id="body" style="overflow: hidden; margin: 0px; padding: 0px;">
+
+<!-- This is the A-Frame scene -->
+<!-- the a-scene tag takes a configuration-like attributes -->
+<a-scene embedded arjs='sourceType: webcam; debugUIEnabled: false;'
+         cursor="rayOrigin: mouse"
+         id="scene"
+         loading-screen="dotsColor: red; backgroundColor: black"
+         vr-mode-ui="enabled: false"
+         device-orientation-permission-ui="enabled: false">
+         <!-- for detection of barcodes:  detectionMode: mono_and_matrix; matrixCodeType: 3x3; -->
+
+    <a-assets timeout="60000">
+        <a-asset-item id="faucet-anim"
+                      response-type="arraybuffer"
+                      src="Vandhane_metal2.gltf">
+        </a-asset-item>
+       
+        <a-sound id="water-sound" src="url(water_splatter.mp3)" autoplay="true"></a-sound>
+
+        <img id="steam-texture" src="steam.png">
+
+    </a-assets>
+
+    <a-marker type="pattern"
+              url="pattern-HoforHandPhone0914.patt"
+              id="faucetmarker">
+
+        <a-entity faucet smoothedobject
+                  id="faucet-animation"
+                  position='0 0.5 0.5'
+                  scale="0.2 0.2 0.2"
+                  rotation="180 90 -90">
+
+            <a-entity modify-mat water
+                      id="faucet-animation-model"
+                      gltf-model="#faucet-anim"
+                      animation-mixer="clip: IdleHigh; loop: repeat; clampWhenFinished: true"
+                      gltf-morph="morphtarget: Low;value: 0">
+            </a-entity>
+
+           <!-- Animationed Steam Sprites Section  -->
+
+            <a-image id="steam1" src="#steam-texture" material="opacity: 0.2" scale="1 1 1" rotation="0 90 0" position="2.1 -1.4 0"
+            animation__rotation="property: rotation; to: 0 90 360; loop: true; dur: 1000;"
+            animation__position=" property: position; to: 0 4.9 0.5; loop: true; dur: 3000"
+            animation__scale="property: scale; to: 0.1 0.1 0.1; loop: true; dur:3000;"
+            style="visibility: visible;">
+            </a-image>
+
+            <a-image id="steam2" src="#steam-texture" material="opacity: 0.2" scale="1 1 1" rotation="0 90 0" position="3.5 -1.4 0"
+            animation__rotation="property: rotation; to: 0 90 360; loop: true; dur: 2000;"
+            animation__position=" property: position; to: 3 3.9 1; loop: true; dur: 2000"
+            animation__scale="property: scale; to: 0.1 0.1 0.1; loop: true; dur:1000;"
+            style="visibility: visible;">
+            </a-image>
+
+            <a-image id="steam3" src="#steam-texture" material="opacity: 0.2" scale="1 1 1" rotation="0 90 0" position="1.6 -1.4 0"
+            animation__rotation="property: rotation; to: 0 90 360; loop: true; dur: 3000;"
+            animation__position=" property: position; to: 1 3.5 1.5; loop: true; dur: 1000"
+            animation__scale="property: scale; to: 0.1 0.1 0.1; loop: true; dur:1000;"
+            style="visibility: visible;">
+            </a-image>
+
+            <a-image id="steam4" src="#steam-texture" material="opacity: 0.2" scale="1 1 1" rotation="0 90 0" position="2.1 -1.4 0"
+            animation__rotation="property: rotation; to: 0 90 360; loop: true; dur: 1000;"
+            animation__position=" property: position; to: 4.0 4.3 -0.5; loop: true; dur: 3000"
+            animation__scale="property: scale; to: 0.1 0.1 0.1; loop: true; dur:1000;"
+            style="visibility: visible;">
+            </a-image>
+
+            <a-image id="steam5" src="#steam-texture" material="opacity: 0.2" scale="1 1 1" rotation="0 90 0" position="3.5 -1.4 0"
+            animation__rotation="property: rotation; to: 0 90 360; loop: true; dur: 2000;"
+            animation__position=" property: position; to: 3 5.9 -1; loop: true; dur: 2000"
+            animation__scale="property: scale; to: 0.1 0.1 0.1; loop: true; dur:1000;"
+            style="visibility: visible;">
+            </a-image>
+
+            <a-image id="steam6" src="#steam-texture" material="opacity: 0.2" scale="1 1 1" rotation="0 90 0" position="1.6 -1.4 0"
+            animation__rotation="property: rotation; to: 0 90 360; loop: true; dur: 3000;"
+            animation__position=" property: position; to: 1 4.3 0; loop: true; dur: 1000"
+            animation__scale="property: scale; to: 0.1 0.1 0.1; loop: true; dur:1000;"
+            style="visibility: visible;">
+            </a-image>
+
+        </a-entity>       
+
+    </a-marker>
+
+<!--    <a-entity cursor="fuse: true; fuseTimeout: 15000;"-->
+<!--              position="0 0 -1">-->
+<!--    </a-entity>-->
+
+    <a-entity camera
+              look-controls="enabled: false">
+    </a-entity>
+
+</a-scene>
+
+<!-- The following buttons are overlayed at relative positions on top of a-scene using css -->
+
+<div id="interaction-buttondiv" class="interaction-button-div" style="visibility: hidden;">
+    <button class="interaction-button button" onclick="changeAnimationState();">
+       SLUK FOR
+       <br> DET VARME VAND</br>
+    </button>
+</div>
+
+<div id="signup-buttondiv" class="signup-button-div" style="visibility: hidden;">
+    <form action="https://www.hofor.dk/privat/spar-penge/kom-med-dit-bedste-sparetip">
+        <button class="signup-button button">
+            SPAR OG VIND!
+        </button>
+    </form>
+</div>
+
+<div class="info-box-div">
+    <div class="bordered-box" id="info-box">
+        <h1 style="background-color: #ED028C; color: aliceblue;">SCAN PLAKATEN MED KAMERAET</h1>
+        <img id="speaker-image" src="speaker_98x90_green.png" style="visibility: hidden;">
+    </div>
+</div>
+
+<script>
+    // this portion of js is here, because despite the instructions from the AFrame documentation,
+    // the getting of document elements will not work unless id of the element requested has been defined.
+
+    let minimumTimeBetweenAnimationChange = 1350;
+    let requiredNumberOfInteractions = 1;
+    let currentNumberOfInteractions = 0;
+    let animationState = "IdleHigh"; // other option is Close
+    let animationStates = ['IdleHigh', 'HighToOff', 'IdleOff']
+    let lastAnimationChangeTime = new Date().getTime()
+
+    let faucetMarker = document.getElementById("faucetmarker");
+    let interactionButtonDiv = document.getElementById("interaction-buttondiv");
+    let infoBoxDiv = document.getElementById("info-box");
+
+    let soundToPlay = new Audio("water_splatter.mp3")
+
+    let isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent); // regex tests if browser identifies as Safari
+
+    // next two functions en- and disable the interaction button, they are fed to the marker lost and found events
+    function onMarkerFound() {
+        interactionButtonDiv.style.visibility = "visible"
+        infoBoxDiv.style.visibility = "hidden"
+        // console.log("Marker Found!")
+
+    }
+
+    function onMarkerLost() {
+        interactionButtonDiv.style.visibility = "hidden"
+        // console.log("Marker Lost!")
+    }
+
+    // markerFound and markerLost events are triggered on registering / losing tracking of the marker
+    faucetMarker.addEventListener("markerFound", onMarkerFound)
+    faucetMarker.addEventListener("markerLost", onMarkerLost)
+
+    // checks that circumstance are ripe for animation change; and does it if so, or not if not
+    function changeAnimationState() {
+        if (itIsTimeForChange()) {
+            currentNumberOfInteractions += 1
+            checkForSwitchToSignupUI()
+
+            animationState = animationStates[currentNumberOfInteractions]
+            // animationstate is 1 the first time the code reaches here
+            // ['IdleHigh', 'HighToOff', 'IdleOff']
+            document.getElementById("faucet-animation-model").setAttribute("animation-mixer", "clip: " + animationState)
+
+            // this addition is only useful because there is a single animation change before the thing is done animating.
+            document.getElementById("faucet-animation-model").setAttribute("animation-mixer", "loop: once");
+         
+            // console.log("Animation State now: " + animationState);            
+        }
+    }
+
+    function itIsTimeForChange() {
+
+        const now = new Date().getTime()
+        // figuring out if enough time has passed between animations
+        const delta = now - lastAnimationChangeTime;
+        // do not launch change if too little time has passed, or enough interactions have been registered.
+        if (delta < minimumTimeBetweenAnimationChange ||
+            currentNumberOfInteractions >= requiredNumberOfInteractions) {
+            //  console.log("Now " + now + "\nDelta " + delta + "\nYou're too quick! Could not change animation.")
+            return false
+        }
+        lastAnimationChangeTime = now // updating time counter
+
+        return true
+    }
+
+    function checkForSwitchToSignupUI() {
+        if (currentNumberOfInteractions >= requiredNumberOfInteractions) {
+            document.getElementById("signup-buttondiv").style.visibility = "visible" // set signup button visible
+            faucetMarker.removeEventListener("markerFound", onMarkerFound) // make interaction button not appear again
+            onMarkerLost() // make interaction button invisible
+
+            // stop sound
+            if(isSafari){            
+                soundToPlay.src = ""
+            } else {
+                document.getElementById('water-sound').components.sound.stopSound();
+            }
+
+            // 'turn off steam' section
+            let steamElements = []
+
+            for(let i = 1; i < 7; i++){ 
+                steamElements.push(document.getElementById('steam'+i)) 
+            }
+            
+            steamElements.forEach(element => {            
+             element.parentNode.removeChild(element)
+            });
+        }
+    }
+
+    window.addEventListener('load', function(){
+        // test if browser is safari        
+        // console.log("isSafari = " + isSafari)
+        // if the page is being displayed on a safari based browser, enable microphone icon
+        if(isSafari){
+
+            let audioContext = new (window.AudioContext || window.webkitAudioContext)()
+
+            console.log(audioContext)
+
+            let speakerImage = document.getElementById("speaker-image")
+            speakerImage.style.visibility = 'visible'
+
+            window.addEventListener('click', function() {
+            
+                speakerImage.style.visibility = 'hidden'
+
+                // create empty buffer
+                let buffer = audioContext.createBuffer(1, 1, 22050);
+                let source = audioContext.createBufferSource();
+                source.buffer = buffer;
+
+                // connect to output (your speakers)
+                source.connect(audioContext.destination);
+
+                // play the file - initialized above
+                soundToPlay.play()
+
+            }, false);
+        }
+    })
+
+
+
+</script>
+</body>
+</html>
+
+<!--Code for VRDK by KCN and FH -->
+
+<!--Inspiration: https://jsfiddle.net/6p0r36bL/4/ -->
+<!--AFrame Components:-->
+<!--https://aframe.io/docs/1.2.0/introduction/writing-a-component.html-->
+<!--https://aframe.io/docs/1.2.0/core/component.html-->
+<!-- https://aframe.io/docs/1.2.0/primitives/a-image.html -->
+
+<!-- Source helping to play sound on iOS -->
+<!-- https://paulbakaus.com/tutorials/html5/web-audio-on-ios/ -->
+<!-- https://stackoverflow.com/questions/14834520/html5-audio-stop-function -->
+<!-- https://stackoverflow.com/questions/53380400/aframe-smoothing-position-and-rotation -->
