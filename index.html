@@ -104,6 +104,21 @@
             margin: auto;
         }
 
+        .error-box {
+            background-color: #ED028C;
+            position: absolute;
+            top: 5%;
+            bottom: 5%;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9;
+            margin: auto;
+        }
+
     </style>
 
     <script>
@@ -338,9 +353,18 @@
         <h1 style="background-color: #ED028C; color: aliceblue;">SCAN PLAKATEN MED KAMERAET</h1>
         <img id="speaker-image" src="speaker_98x90_green.png" style="visibility: hidden;">
 
-<!--        <div id="" style="z-index: 0;">Where you at?</div>-->
-
     </div>
+</div>
+
+<div class="error-box">
+    <div>
+ <h1 style="color: white">Browser Fejl</h1>
+
+
+ <h2>Den browser du bruger kan ikke vise siden ordenligt.</h2>
+ <h2>På Android kan du bruge Chrome.</h2>
+ <h2>På iPhone kan du bruge Safari.</h2>
+</div>
 </div>
 
 <script>
@@ -362,6 +386,11 @@
 
     let isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent); // regex tests if browser identifies as Safari
 
+    let osName = oscheck()
+    let browserName = browsercheck()
+
+    console.log(osName)
+    console.log(browserName)
 
     // next two functions en- and disable the interaction button, they are fed to the marker lost and found events
     function onMarkerFound() {
@@ -474,6 +503,53 @@
         }
     })
 
+    function oscheck(){ 
+
+        if(navigator.appVersion.indexOf("iPhone")!=-1) {return "iOS"}
+        if(navigator.appVersion.indexOf("Android")!=-1) {return "Android"}
+        if(navigator.appVersion.indexOf("Win")!=-1){ return "Windows" }
+        
+        return "Other"
+    }
+
+    // purpose of function is to check for the os and broswer used
+    function browsercheck(){
+            let userAgentString = navigator.userAgent;
+
+            let chromeAgent = userAgentString.indexOf("Chrome") > -1
+            let IExplorerAgent = userAgentString.indexOf("MSIE") > -1 || userAgentString.indexOf("rv:") > -1 
+            let EdgeAgent = userAgentString.indexOf("Edg") > -1
+            let firefoxAgent = userAgentString.indexOf("Firefox") > -1
+            let safariAgent = userAgentString.indexOf("Safari") > -1
+            let operaAgent = userAgentString.indexOf("OP") > -1;
+
+             // Discard Safari since it also matches Chrome
+             if ((chromeAgent) && (safariAgent)) { safariAgent = false; }
+           
+                  
+            // Discard Chrome since it also matches Opera     
+            if ((chromeAgent) && (operaAgent)) { chromeAgent = false;}
+
+            // Discard Chrome since it also matches IExplorer & Edge
+            if(chromeAgent && IExplorerAgent) {chromeAgent = false;}
+
+            // console.log(userAgentString)
+            // console.log("Chrome agent: " + chromeAgent)
+            // console.log("IExplorer agent: " + IExplorerAgent)
+            // console.log("Firefox agent: " + firefoxAgent)
+            // console.log("safariAgent: " + safariAgent)
+            // console.log("Opera agent: " + operaAgent)
+           
+             // return the currently used browser
+            if(firefoxAgent){return "Firefox"}
+            if(IExplorerAgent){return "IExplorer"}  
+            if(EdgeAgent){return "Edge"}          
+            if(chromeAgent){return "Chrome"}
+            if(safariAgent){return "Safari"}
+            if(operaAgent){return "Opera"}
+
+    }
+
     // This next section fixes a that happens when the browser loses focus
 
     // makes sound stop when viewport/a-scene loses focus:
@@ -498,6 +574,7 @@
             document.getElementById('water-sound').components.sound.playSound();
         }
     }
+
 </script>
 
 </body>
@@ -519,3 +596,6 @@
 
 <!-- Camera zoom problem -->
 <!-- https://github.com/jeromeetienne/AR.js/issues/369 -->
+
+<!--  -->
+<!-- https://www.geeksforgeeks.org/how-to-detect-the-user-browser-safari-chrome-ie-firefox-and-opera-using-javascript/ -->
