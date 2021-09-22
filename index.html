@@ -399,6 +399,7 @@
         if(osName.indexOf("Android")>-1 && browserName.indexOf("Chrome")>-1){return true}
       //  if(osName.indexOf("Android")>-1 && browserName.indexOf("Firefox")>-1){return true}
         if(osName.indexOf("iOS")>-1 && browserName.indexOf("Safari")>-1){return true}
+        if(osName.indexOf("Other")>-1 && browserName.indexOf("Safari")>-1){return true}
         if(osName.indexOf("Windows")>-1&&(browserName.indexOf("Chrome")>-1||browserName.indexOf("Firefox")>-1|| browserName.indexOf("Edge")>-1)){return true}
 
         return false;
