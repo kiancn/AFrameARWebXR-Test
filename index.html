@@ -356,7 +356,7 @@
     </div>
 </div>
 
-<div id="error-box" class="error-box" style="visibility: visible;">
+<div id="error-box" class="error-box" style="visibility: hidden;">
     <div style="padding: 7%;">
  <h1 style="color: white">Browser Fejl</h1>
  <h2>Den browser du bruger kan ikke vise siden ordenligt.</h2>
@@ -528,13 +528,13 @@
 
             console.log(audioContext)
 
-            let speakerImage = document.getElementById("speaker-image")
-            speakerImage.style.visibility = 'visible'
+            // let speakerImage = document.getElementById("speaker-image")
+            // speakerImage.style.visibility = 'visible'
 
-            window.addEventListener('click', function () {
-                speakerImage.style.visibility = 'hidden'
-                loadandplaysoundforsafari()
-            }, false);
+            // window.addEventListener('click', function () {
+            //     speakerImage.style.visibility = 'hidden'
+            //     loadandplaysoundforsafari()
+            // }, false);
         }
     })
 
