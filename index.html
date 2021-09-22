@@ -415,11 +415,7 @@
 
         //if browser incompa
         // 1 stopping sound
-        if (isSafari) {
-            soundToPlay.src = ""
-        } else {
-            document.getElementById('water-sound').components.sound.stopSound();
-        }
+        stopSoundNow()
 
         // 2 activating error message
         errorBox.style.visibility = "visible"
@@ -520,10 +516,10 @@
     }
 
     window.addEventListener('load', function () {
-        // test if browser is safari        
+        
         // console.log("isSafari = " + isSafari)
         // if the page is being displayed on a safari based browser, enable microphone icon
-        if (isSafari) {
+        if (browsercheck().indexOf("Safari")>-1) {
 
             let audioContext = new (window.AudioContext || window.webkitAudioContext)()
 
@@ -604,7 +600,7 @@
     }
 
     function playSoundNow(){
-        if (isSafari) {
+        if (browsercheck().indexOf("Safari")>-1) {
             loadandplaysoundforsafari()
         } else {
             document.getElementById('water-sound').components.sound.playSound();
@@ -612,7 +608,7 @@
     }
 
     function stopSoundNow(){
-        if (isSafari) {
+        if (browsercheck().indexOf("Safari")>-1) {
             soundToPlay.src = ""
         } else {
             document.getElementById('water-sound').components.sound.stopSound();
