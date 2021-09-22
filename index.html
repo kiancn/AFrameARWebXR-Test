@@ -247,7 +247,7 @@
                       src="Vandhane_metal2.gltf">
         </a-asset-item>
 
-        <a-sound id="water-sound" src="url(water_splatter.mp3)" autoplay="true" loop="true"></a-sound>
+        <a-sound id="water-sound" src="url(water_splatter.mp3)" autoplay="false" loop="true"></a-sound>
 
         <img id="steam-texture" src="steam.png">
 
@@ -432,11 +432,12 @@
         interactionButtonDiv.style.visibility = "visible"
         infoBoxDiv.style.visibility = "hidden"
         // console.log("Marker Found!")
-
+        playSoundNow()
     }
 
     function onMarkerLost() {
         interactionButtonDiv.style.visibility = "hidden"
+        stopSoundNow()
         // console.log("Marker Lost!")
     }
 
@@ -528,8 +529,8 @@
 
             console.log(audioContext)
 
-            // let speakerImage = document.getElementById("speaker-image")
-            // speakerImage.style.visibility = 'visible'
+            let speakerImage = document.getElementById("speaker-image")
+            speakerImage.style.visibility = 'visible'
 
             window.addEventListener('click', function () {
                 speakerImage.style.visibility = 'hidden'
@@ -594,22 +595,28 @@
     // onblur fires when window loses focus, onfocus when it gains it.
 
     window.onblur = () => {
-        console.log("focus was lost")
-
-        if (isSafari) {
-            soundToPlay.src = ""
-        } else {
-            document.getElementById('water-sound').components.sound.stopSound();
-        }
+       // console.log("focus was lost")
+        stopSoundNow()
     }
     window.onfocus = () => {
-        console.log("focus gained")
+       // console.log("focus gained")
+       playSoundNow()
+    }
 
+    function playSoundNow(){
         if (isSafari) {
             loadandplaysoundforsafari()
         } else {
             document.getElementById('water-sound').components.sound.playSound();
         }
+    }
+
+    function stopSoundNow(){
+        if (isSafari) {
+            soundToPlay.src = ""
+        } else {
+            document.getElementById('water-sound').components.sound.stopSound();
+        }        
     }
 
 </script>
