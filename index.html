@@ -539,7 +539,7 @@
 
     function oscheck(){ 
 
-        if(navigator.appVersion.indexOf("iPhone")!=-1) {return "iOS"}
+        if(navigator.appVersion.indexOf("iPhone")!=-1||navigator.appVersion.indexOf("iPad")!=-1) {return "iOS"}
         if(navigator.appVersion.indexOf("Android")!=-1) {return "Android"}
         if(navigator.appVersion.indexOf("Win")!=-1){ return "Windows" }
         
