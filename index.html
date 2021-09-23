@@ -358,14 +358,16 @@
 
 <div id="error-box" class="error-box" style="visibility: hidden;">
     <div style="padding: 7%;">
- <h1 style="color: white">Browser Fejl</h1>
- <h2>Den browser du bruger kan ikke vise siden ordenligt.</h2>
- <h2>På Android kan du bruge Chrome.</h2>
- <h2>På iPhone kan du bruge Safari.</h2>
- <h2> <a href="https://www.hofor.dk/privat/spar-penge/kom-med-dit-bedste-sparetip"><button class="btn" style="color: aliceblue;">GÅ DIREKTE TIL SPARE KONKURRENCE</button> </a> </h2>
-<h3 id="error-message"></h3>
+        <h1 style="color: white">Browser Fejl</h1>
+        <h2>Den browser du bruger kan ikke vise siden ordenligt.</h2>
+        <h2>På Android kan du bruge Chrome.</h2>
+        <h2>På iPhone kan du bruge Safari.</h2>
+        <h2><a href="https://www.hofor.dk/privat/spar-penge/kom-med-dit-bedste-sparetip">
+            <button class="btn" style="color: aliceblue;">GÅ DIREKTE TIL SPARE KONKURRENCE</button>
+        </a></h2>
+        <h3 id="error-message"></h3>
 
-</div>
+    </div>
 </div>
 
 <script>
@@ -388,41 +390,99 @@
 
     let isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent); // regex tests if browser identifies as Safari
 
-    let osName = oscheck()
-    let browserName = browsercheck()
+    let osName = osCheck()
+    let browserName = browserCheck()
 
     console.log(osName)
     console.log(browserName)
 
     adjustpageifbrowserincompatible()
 
-    function checkforbrowsercompatibility(){
-        if(osName.indexOf("Android")>-1 && browserName.indexOf("Chrome")>-1){return true}
-      //  if(osName.indexOf("Android")>-1 && browserName.indexOf("Firefox")>-1){return true}
-        if(osName.indexOf("iOS")>-1 && browserName.indexOf("Safari")>-1){return true}
-        if(osName.indexOf("Other")>-1 && browserName.indexOf("Safari")>-1){return true}
-        if(osName.indexOf("Windows")>-1&&(browserName.indexOf("Chrome")>-1||browserName.indexOf("Firefox")>-1|| browserName.indexOf("Edge")>-1)){return true}
+    function osCheck() {
+
+        if (navigator.appVersion.indexOf("iPhone") !== -1 || navigator.appVersion.indexOf("iPad") !== -1) {
+            return "iOS"
+        }
+        if (navigator.appVersion.indexOf("Android") !== -1) {
+            return "Android"
+        }
+        if (navigator.appVersion.indexOf("Win") !== -1) {
+            return "Windows"
+        }
+
+        return "Other"
+    }
+
+    // purpose of function is to check for the os and broswer used
+    function browserCheck() {
+        let userAgentString = navigator.userAgent;
+
+        let chromeAgent = userAgentString.indexOf("Chrome") > -1
+        let IExplorerAgent = userAgentString.indexOf("MSIE") > -1 || userAgentString.indexOf("rv:") > -1
+        let EdgeAgent = userAgentString.indexOf("Edg") > -1
+        let firefoxAgent = userAgentString.indexOf("Firefox") > -1
+        let safariAgent = userAgentString.indexOf("Safari") > -1
+        let operaAgent = userAgentString.indexOf("OP") > -1
+        let samsungAgent = userAgentString.indexOf("Samsung") > -1
+
+        // Discard Safari since it also matches Chrome
+        if (chromeAgent && safariAgent) safariAgent = false;
+
+        // Discard Chrome since it also matches Opera
+        if (chromeAgent && operaAgent) chromeAgent = false;
+
+        // Discard Chrome since it also matches IExplorer & Edge
+        if (chromeAgent && IExplorerAgent) chromeAgent = false;
+
+
+        // console.log(userAgentString)
+        // console.log("Chrome agent: " + chromeAgent)
+        // console.log("IExplorer agent: " + IExplorerAgent)
+        // console.log("Firefox agent: " + firefoxAgent)
+        // console.log("safariAgent: " + safariAgent)
+        // console.log("Opera agent: " + operaAgent)
+
+        // return the currently used browser ( the order matter here )
+        if (samsungAgent) return "Samsung"
+        if (firefoxAgent) return "Firefox"
+        if (IExplorerAgent) return "IExplorer"
+        if (EdgeAgent) return "Edge"
+        if (chromeAgent) return "Chrome"
+        if (safariAgent) return "Safari"
+        if (operaAgent) return "Opera"
+    }
+
+    function checkforbrowsercompatibility() {
+        if (osName.indexOf("Android") > -1 && browserName.indexOf("Chrome") > -1) {
+            return true
+        }
+        //  if(osName.indexOf("Android")>-1 && browserName.indexOf("Firefox")>-1){return true}
+        if (osName.indexOf("iOS") > -1 && browserName.indexOf("Safari") > -1) {
+            return true
+        }
+        if (osName.indexOf("Other") > -1 && browserName.indexOf("Safari") > -1) {
+            return true
+        }
+        if (osName.indexOf("Windows") > -1 && (browserName.indexOf("Chrome") > -1 || browserName.indexOf("Firefox") > -1 || browserName.indexOf("Edge") > -1)) {
+            return true
+        }
 
         return false;
     }
 
-    function adjustpageifbrowserincompatible(){
-        
+    function adjustpageifbrowserincompatible() {
+
         // if browser is compatible, nothing happens, just return from function
-        if(checkforbrowsercompatibility()){
+        if (checkforbrowsercompatibility()) {
             errorBox.style.visibility = "hidden"
-             return
-             } 
+            return
+        }
 
-        // if browser incompatible       
-
-        // 2 activating error message
+        // if browser incompatible
         errorBox.style.visibility = "visible"
-
         // removing a-scene from the mix
         document.getElementById("body").removeChild(document.getElementById("scene"))
-
-       // document.getElementById("error-message").innerText = "OS: " + osName + ". Browser: " + browserName
+        document.getElementById("error-message").innerText = "OS: " + osName + ". Browser: " + browserName
     }
 
     // next two functions en- and disable the interaction button, they are fed to the marker lost and found events
@@ -518,10 +578,10 @@
     }
 
     window.addEventListener('load', function () {
-        
+
         // console.log("isSafari = " + isSafari)
         // if the page is being displayed on a safari based browser, enable microphone icon
-        if (browsercheck().indexOf("Safari")>-1) {
+        if (isSafari) {
 
             let audioContext = new (window.AudioContext || window.webkitAudioContext)()
 
@@ -537,54 +597,7 @@
         }
     })
 
-    function oscheck(){ 
 
-        if(navigator.appVersion.indexOf("iPhone")!=-1||navigator.appVersion.indexOf("iPad")!=-1) {return "iOS"}
-        if(navigator.appVersion.indexOf("Android")!=-1) {return "Android"}
-        if(navigator.appVersion.indexOf("Win")!=-1){ return "Windows" }
-        
-        return "Other"
-    }
-
-    // purpose of function is to check for the os and broswer used
-    function browsercheck(){
-            let userAgentString = navigator.userAgent;
-
-            let chromeAgent = userAgentString.indexOf("Chrome") > -1
-            let IExplorerAgent = userAgentString.indexOf("MSIE") > -1 || userAgentString.indexOf("rv:") > -1 
-            let EdgeAgent = userAgentString.indexOf("Edg") > -1
-            let firefoxAgent = userAgentString.indexOf("Firefox") > -1
-            let safariAgent = userAgentString.indexOf("Safari") > -1
-            let operaAgent = userAgentString.indexOf("OP") > -1
-            let samsungAgent = userAgentString.indexOf("Samsung") >-1
-
-             // Discard Safari since it also matches Chrome
-             if ((chromeAgent) && (safariAgent)) { safariAgent = false; }
-           
-                  
-            // Discard Chrome since it also matches Opera     
-            if ((chromeAgent) && (operaAgent)) { chromeAgent = false;}
-
-            // Discard Chrome since it also matches IExplorer & Edge
-            if(chromeAgent && IExplorerAgent) {chromeAgent = false;}
-
-            // console.log(userAgentString)
-            // console.log("Chrome agent: " + chromeAgent)
-            // console.log("IExplorer agent: " + IExplorerAgent)
-            // console.log("Firefox agent: " + firefoxAgent)
-            // console.log("safariAgent: " + safariAgent)
-            // console.log("Opera agent: " + operaAgent)
-           
-             // return the currently used browser
-            if(samsungAgent){return "Samsung"}
-            if(firefoxAgent){return "Firefox"}
-            if(IExplorerAgent){return "IExplorer"}  
-            if(EdgeAgent){return "Edge"}          
-            if(chromeAgent){return "Chrome"}
-            if(safariAgent){return "Safari"}
-            if(operaAgent){return "Opera"}
-
-    }
 
     // This next section fixes a that happens when the browser loses focus
 
@@ -593,28 +606,28 @@
     // onblur fires when window loses focus, onfocus when it gains it.
 
     window.onblur = () => {
-       // console.log("focus was lost")
+        // console.log("focus was lost")
         stopSoundNow()
     }
     window.onfocus = () => {
-       // console.log("focus gained")
-       playSoundNow()
+        // console.log("focus gained")
+        playSoundNow()
     }
 
-    function playSoundNow(){
-        if (browsercheck().indexOf("Safari")>-1) {
+    function playSoundNow() {
+        if (isSafari) {
             loadandplaysoundforsafari()
         } else {
             document.getElementById('water-sound').components.sound.playSound();
         }
     }
 
-    function stopSoundNow(){
-        if (browsercheck().indexOf("Safari")>-1) {
+    function stopSoundNow() {
+        if (isSafari) {
             soundToPlay.src = ""
         } else {
             document.getElementById('water-sound').components.sound.stopSound();
-        }        
+        }
     }
 
 </script>
