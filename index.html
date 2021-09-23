@@ -90,7 +90,7 @@
             text-align: center;
         }
 
-        .info-box-div {
+        .scan-box-div {
             position: absolute;
             top: 5%;
             bottom: 5%;
@@ -224,7 +224,6 @@
             }
         })
 
-
     </script>
 
     <title>HOFOR Vand og Varme Sparekonkurrence</title>
@@ -347,7 +346,7 @@
     </form>
 </div>
 
-<div class="info-box-div">
+<div class="scan-box-div">
     <div class="bordered-box" id="info-box">
 
         <h1 style="background-color: #ED028C; color: aliceblue;">SCAN PLAKATEN MED KAMERAET</h1>
@@ -358,8 +357,8 @@
 
 <div id="error-box" class="error-box" style="visibility: hidden;">
     <div style="padding: 7%;">
-        <h1 style="color: white">Browser Fejl</h1>
-        <h2>Den browser du bruger kan ikke vise siden ordenligt.</h2>
+        <h1 style="color: white">Hov! Browser Fejl</h1>
+        <h2 style="color: darkgrey">Den browser du bruger kan ikke vise siden ordenligt.</h2>
         <h2>På Android kan du bruge Chrome.</h2>
         <h2>På iPhone kan du bruge Safari.</h2>
         <h2><a href="https://www.hofor.dk/privat/spar-penge/kom-med-dit-bedste-sparetip">
@@ -413,7 +412,7 @@
             return "Windows"
         }
 
-        return "Other"
+        return "et andet OS"
     }
 
     // purpose of function is to check for the os and broswer used
@@ -436,7 +435,6 @@
 
         // Discard Chrome since it also matches IExplorer & Edge
         if (chromeAgent && IExplorerAgent) chromeAgent = false;
-
 
         // console.log(userAgentString)
         // console.log("Chrome agent: " + chromeAgent)
@@ -463,7 +461,7 @@
         if (_osName.indexOf("iOS") > -1 && _browserName.indexOf("Safari") > -1) {
             return true
         }
-        if (_osName.indexOf("Other") > -1 && _browserName.indexOf("Safari") > -1) {
+        if (_osName.indexOf("et andet OS") > -1 && _browserName.indexOf("Safari") > -1) {
             return true
         }
         if (_osName.indexOf("Windows") > -1 && (_browserName.indexOf("Chrome") > -1 || _browserName.indexOf("Firefox") > -1 || _browserName.indexOf("Edge") > -1)) {
@@ -485,7 +483,7 @@
         errorBox.style.visibility = "visible"
         // removing a-scene from the mix
         document.getElementById("body").removeChild(document.getElementById("scene"))
-        document.getElementById("error-message").innerText = "OS: " + _osName + ". Browser: " + _browserName
+      //  document.getElementById("error-message").innerText = "Du er på " + _osName + " og bruger vist " + _browserName
     }
 
     // next two functions en- and disable the interaction button, they are fed to the marker lost and found events
@@ -566,53 +564,29 @@
         }
     }
 
-    function loadandplaysoundforsafari() {
-
-        // create empty buffer
-        // let buffer = audioContext.createBuffer(1, 1, 22050);
-        // let source = audioContext.createBufferSource();
-        // source.buffer = buffer;
-        //
-        // // connect to output (your speakers)
-        // source.connect(audioContext.destination);
-
-        // soundToPlay = new Audio("water_splatter.mp3")
-        soundToPlay.play()
-        soundToPlay.pause()
-
-        // // play the file - initialized above
-        // soundToPlay.addEventListener("canplaythrough", () => {
-        //     soundToPlay.play()
-        //     soundToPlay.pause()
-        // })
-    }
-
+    // when page has loaded, if on safari, show  what happens when
     window.addEventListener('load', function () {
-
         // console.log("isSafari = " + isSafari)
+
         // if the page is being displayed on a safari based browser, enable microphone icon
         if (isSafari) {
-
-            let audioContext = new (window.AudioContext || window.webkitAudioContext)()
-
-            console.log(audioContext)
 
             let speakerImage = document.getElementById("speaker-image")
             speakerImage.style.visibility = 'visible'
 
             speakerImage.addEventListener('click', function () {
                 speakerImage.style.visibility = 'hidden'
-                loadandplaysoundforsafari()
+                soundToPlay.play()
+                soundToPlay.pause()
             }, false);
         }
     })
-
 
     // This next section fixes a that happens when the browser loses focus
 
     // makes sound stop when viewport/a-scene loses focus:
     // the idea is to add listener-functions to the events of the window object
-    // onblur fires when window loses focus, onfocus when it gains it.
+    // onblur fires when window loses focus, onfocus when it gains it; this does not work on all browsers.
 
     window.onblur = () => {
         // console.log("focus was lost")
@@ -635,7 +609,6 @@
     function stopSoundNow() {
         if (isSafari) {
             soundToPlay.pause()
-            // soundToPlay.src = ""
         } else {
             document.getElementById('water-sound').components.sound.stopSound();
         }
