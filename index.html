@@ -573,8 +573,12 @@
         // connect to output (your speakers)
         source.connect(audioContext.destination);
 
+       soundToPlay = new Audio("water_splatter.mp3")
+
         // play the file - initialized above
-        soundToPlay.play()
+        soundToPlay.addEventListener("canplaythrough", () => {
+            soundToPlay.play()
+        })
     }
 
     window.addEventListener('load', function () {
