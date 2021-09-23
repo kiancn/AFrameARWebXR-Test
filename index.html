@@ -30,10 +30,10 @@
     <style>
         .interaction-button-div {
             position: absolute;
-            bottom: 15%;
+            bottom: 6.8%;
             left: 0;
             width: 100%;
-            height: 5em;
+            height: 6em;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -41,7 +41,8 @@
         }
 
         .interaction-button {
-            background: rgba(237, 2, 140, 0.8);
+            /*background: rgba(237, 2, 140, 0.8);*/
+            background: rgb(1, 100, 177);
             border: none;
             border-radius: 12px;
             color: aliceblue;
@@ -106,14 +107,14 @@
 
         .speak-area-div {
             position: absolute;
-            top: 15px;            
-            left: 15px;
+            top: 10px;
+            left: 20px;
             width: 100%;
             height: 20%;
-            display: flex;         
+            display: flex;
             margin: auto;
 
-            z-index: 13;         
+            z-index: 13;
         }
 
         .error-box {
@@ -362,15 +363,12 @@
 <!-- the part that displays the initial green border, instructing the user what to do -->
 <div class="scan-box-div">
     <div class="bordered-box" id="info-box">
-
         <h1 style="background-color: #ED028C; color: aliceblue;">SCAN PLAKATEN MED KAMERAET</h1>
-
-
     </div>
 </div>
 
 <div class="speak-area-div">
-    <img id="speaker-image" src="speaker_98x90_green.png" style="visibility: hidden;" width="25" height="22">
+    <img id="speaker-image" src="outline_volume_up_green_96x96.png" style="visibility: hidden;" width="19" height="19">
 </div>
 
 <!-- the part that shows the pinkish error message, if nessecary -->
@@ -414,6 +412,8 @@
 
     let _osName = osCheck()
     let _browserName = browserCheck()
+
+    let trackingNow = false
 
     console.log(_osName)
     console.log(_browserName)
@@ -511,11 +511,13 @@
         infoBoxDiv.style.visibility = "hidden"
         // console.log("Marker Found!")
         playSoundNow()
+        trackingNow = true
     }
 
     function onMarkerLost() {
         interactionButtonDiv.style.visibility = "hidden"
         stopSoundNow()
+        trackingNow = false
         // console.log("Marker Lost!")
     }
 
@@ -596,7 +598,9 @@
             speakerImage.addEventListener('click', function () {
                 speakerImage.style.visibility = 'hidden'
                 soundToPlay.play()
-                soundToPlay.pause()
+                if (!trackingNow) {
+                    soundToPlay.pause()
+                }
             }, false);
         }
     })
