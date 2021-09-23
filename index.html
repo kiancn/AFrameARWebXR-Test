@@ -370,6 +370,8 @@
     </div>
 </div>
 
+<audio id="soundToPlay" src="water_splatter.mp3"></audio>
+
 <script>
     // this portion of js is here, because despite the instructions from the AFrame documentation,
     // the getting of document elements will not work unless id of the element requested has been defined (duh).
@@ -386,7 +388,8 @@
     let infoBoxDiv = document.getElementById("info-box");
     let errorBox = document.getElementById("error-box")
 
-    let soundToPlay = new Audio("water_splatter.mp3")
+    let soundToPlay = document.getElementById("soundToPlay")
+    // let soundToPlay = new Audio("water_splatter.mp3")
 
     let isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent); // regex tests if browser identifies as Safari
 
@@ -566,12 +569,12 @@
     function loadandplaysoundforsafari() {
 
         // create empty buffer
-        let buffer = audioContext.createBuffer(1, 1, 22050);
-        let source = audioContext.createBufferSource();
-        source.buffer = buffer;
-
-        // connect to output (your speakers)
-        source.connect(audioContext.destination);
+        // let buffer = audioContext.createBuffer(1, 1, 22050);
+        // let source = audioContext.createBufferSource();
+        // source.buffer = buffer;
+        //
+        // // connect to output (your speakers)
+        // source.connect(audioContext.destination);
 
         // soundToPlay = new Audio("water_splatter.mp3")
         soundToPlay.play()
@@ -652,10 +655,12 @@
 <!--https://aframe.io/docs/1.2.0/core/component.html-->
 <!-- https://aframe.io/docs/1.2.0/primitives/a-image.html -->
 
+<!-- https://stackoverflow.com/questions/53380400/aframe-smoothing-position-and-rotation -->
+
 <!-- Source helping to play sound on iOS -->
 <!-- https://paulbakaus.com/tutorials/html5/web-audio-on-ios/ -->
 <!-- https://stackoverflow.com/questions/14834520/html5-audio-stop-function -->
-<!-- https://stackoverflow.com/questions/53380400/aframe-smoothing-position-and-rotation -->
+
 
 <!-- Camera zoom problem -->
 <!-- https://github.com/jeromeetienne/AR.js/issues/369 -->
