@@ -573,12 +573,14 @@
         // connect to output (your speakers)
         source.connect(audioContext.destination);
 
-       soundToPlay = new Audio("water_splatter.mp3")
+        soundToPlay.play()
+        soundToPlay.pause()
 
-        // play the file - initialized above
-        soundToPlay.addEventListener("canplaythrough", () => {
-            soundToPlay.play()
-        })
+        //
+        // // play the file - initialized above
+        // soundToPlay.addEventListener("canplaythrough", () => {
+        //     soundToPlay.play()
+        // })
     }
 
     window.addEventListener('load', function () {
@@ -602,7 +604,6 @@
     })
 
 
-
     // This next section fixes a that happens when the browser loses focus
 
     // makes sound stop when viewport/a-scene loses focus:
@@ -620,7 +621,8 @@
 
     function playSoundNow() {
         if (isSafari) {
-            loadandplaysoundforsafari()
+            soundToPlay.play()
+            // loadandplaysoundforsafari()
         } else {
             document.getElementById('water-sound').components.sound.playSound();
         }
@@ -628,7 +630,8 @@
 
     function stopSoundNow() {
         if (isSafari) {
-            soundToPlay.src = ""
+            soundToPlay.pause()
+            // soundToPlay.src = ""
         } else {
             document.getElementById('water-sound').components.sound.stopSound();
         }
