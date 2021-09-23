@@ -356,19 +356,19 @@
     </div>
 </div>
 
-<!--<div id="error-box" class="error-box" style="visibility: hidden;">-->
-<!--    <div style="padding: 7%;">-->
-<!--        <h1 style="color: white">Browser Fejl</h1>-->
-<!--        <h2>Den browser du bruger kan ikke vise siden ordenligt.</h2>-->
-<!--        <h2>På Android kan du bruge Chrome.</h2>-->
-<!--        <h2>På iPhone kan du bruge Safari.</h2>-->
-<!--        <h2><a href="https://www.hofor.dk/privat/spar-penge/kom-med-dit-bedste-sparetip">-->
-<!--            <button class="btn" style="color: aliceblue;">GÅ DIREKTE TIL SPARE KONKURRENCE</button>-->
-<!--        </a></h2>-->
-<!--        <h3 id="error-message"></h3>-->
+<div id="error-box" class="error-box" style="visibility: hidden;">
+    <div style="padding: 7%;">
+        <h1 style="color: white">Browser Fejl</h1>
+        <h2>Den browser du bruger kan ikke vise siden ordenligt.</h2>
+        <h2>På Android kan du bruge Chrome.</h2>
+        <h2>På iPhone kan du bruge Safari.</h2>
+        <h2><a href="https://www.hofor.dk/privat/spar-penge/kom-med-dit-bedste-sparetip">
+            <button class="btn" style="color: aliceblue;">GÅ DIREKTE TIL SPARE KONKURRENCE</button>
+        </a></h2>
+        <h3 id="error-message"></h3>
 
-<!--    </div>-->
-<!--</div>-->
+    </div>
+</div>
 
 <script>
     // this portion of js is here, because despite the instructions from the AFrame documentation,
@@ -390,11 +390,11 @@
 
     let isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent); // regex tests if browser identifies as Safari
 
-    let osName = osCheck()
-    let browserName = browserCheck()
+    let _osName = osCheck()
+    let _browserName = browserCheck()
 
-    console.log(osName)
-    console.log(browserName)
+    console.log(_osName)
+    console.log(_browserName)
 
     adjustpageifbrowserincompatible()
 
@@ -453,17 +453,17 @@
     }
 
     function checkforbrowsercompatibility() {
-        if (osName.indexOf("Android") > -1 && browserName.indexOf("Chrome") > -1) {
+        if (_osName.indexOf("Android") > -1 && _browserName.indexOf("Chrome") > -1) {
             return true
         }
         //  if(osName.indexOf("Android")>-1 && browserName.indexOf("Firefox")>-1){return true}
-        if (osName.indexOf("iOS") > -1 && browserName.indexOf("Safari") > -1) {
+        if (_osName.indexOf("iOS") > -1 && _browserName.indexOf("Safari") > -1) {
             return true
         }
-        if (osName.indexOf("Other") > -1 && browserName.indexOf("Safari") > -1) {
+        if (_osName.indexOf("Other") > -1 && _browserName.indexOf("Safari") > -1) {
             return true
         }
-        if (osName.indexOf("Windows") > -1 && (browserName.indexOf("Chrome") > -1 || browserName.indexOf("Firefox") > -1 || browserName.indexOf("Edge") > -1)) {
+        if (_osName.indexOf("Windows") > -1 && (_browserName.indexOf("Chrome") > -1 || _browserName.indexOf("Firefox") > -1 || _browserName.indexOf("Edge") > -1)) {
             return true
         }
 
@@ -482,7 +482,7 @@
         errorBox.style.visibility = "visible"
         // removing a-scene from the mix
         document.getElementById("body").removeChild(document.getElementById("scene"))
-        document.getElementById("error-message").innerText = "OS: " + osName + ". Browser: " + browserName
+        document.getElementById("error-message").innerText = "OS: " + _osName + ". Browser: " + _browserName
     }
 
     // next two functions en- and disable the interaction button, they are fed to the marker lost and found events
