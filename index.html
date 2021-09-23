@@ -361,11 +361,11 @@
         <h2>Den browser du bruger kan ikke vise siden ordenligt.</h2>
         <h2>På Android kan du bruge Chrome.</h2>
         <h2>På iPhone kan du bruge Safari.</h2>
-        <h3 id="error-message"></h3>
+
         <h2><a href="https://www.hofor.dk/privat/spar-penge/kom-med-dit-bedste-sparetip">
             <button class="btn" style="color: aliceblue;">GÅ DIREKTE TIL SPARE KONKURRENCE</button>
         </a></h2>
-
+        <h3 id="error-message"></h3>
 
     </div>
 </div>
@@ -456,6 +456,11 @@
     }
 
     function checkforbrowsercompatibility() {
+
+        if (navigator.userAgent.match('CriOS')) {
+            return false
+        }
+
         if (_osName.indexOf("Android") > -1 && _browserName.indexOf("Chrome") > -1) {
             return true
         }
@@ -485,7 +490,7 @@
         errorBox.style.visibility = "visible"
         // removing a-scene from the mix
         document.getElementById("body").removeChild(document.getElementById("scene"))
-        document.getElementById("error-message").innerText = "Du er på " + _osName + " og bruger vist " + _browserName
+        // document.getElementById("error-message").innerText = "Du er på " + _osName + " og bruger vist " + _browserName
     }
 
     // next two functions en- and disable the interaction button, they are fed to the marker lost and found events
