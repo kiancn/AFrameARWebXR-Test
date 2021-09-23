@@ -104,6 +104,20 @@
             margin: auto;
         }
 
+        .speak-area-div {
+            position: absolute;
+            top: 10%;
+            bottom: 10%;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+
+            z-index: 9;
+            margin: auto;
+        }
+
         .error-box {
             background-color: #ED028C;
             position: absolute;
@@ -226,7 +240,7 @@
 
     </script>
 
-    <title>HOFOR Vand og Varme Sparekonkurrence</title>
+    <title>HOFOR Vand og Varme Spare Konkurrence</title>
 </head>
 <body id="body" style="overflow: hidden; margin: 0px; padding: 0px;">
 
@@ -329,7 +343,7 @@
 
 </a-scene>
 
-<!-- The following buttons are overlayed at relative positions on top of a-scene using css -->
+<!-- The following divs are overlayed at relative positions on top of a-scene using css -->
 
 <div id="interaction-buttondiv" class="interaction-button-div" style="visibility: hidden;">
     <button class="interaction-button button" onclick="changeAnimationState();">
@@ -346,15 +360,21 @@
     </form>
 </div>
 
+<!-- the part that displays the initial green border, instructing the user what to do -->
 <div class="scan-box-div">
     <div class="bordered-box" id="info-box">
 
         <h1 style="background-color: #ED028C; color: aliceblue;">SCAN PLAKATEN MED KAMERAET</h1>
-        <img id="speaker-image" src="speaker_98x90_green.png" style="visibility: hidden;" width="25" height="22">
+
 
     </div>
 </div>
 
+<div class="speak-area-div">
+    <img id="speaker-image" src="speaker_98x90_green.png" style="visibility: hidden;" width="25" height="22">
+</div>
+
+<!-- the part that shows the pinkish error message, if nessecary -->
 <div id="error-box" class="error-box" style="visibility: hidden;">
     <div style="padding: 7%;">
         <h1 style="color: white">Browser Mismatch</h1>
@@ -366,12 +386,11 @@
             <button class="btn" style="color: aliceblue;">GÅ DIREKTE TIL SPARE KONKURRENCE</button>
         </a></h2>
         <h3 id="error-message"></h3>
-
     </div>
 </div>
 
 <!-- this tag is only relevant for iOS running devices -->
-<audio id="soundToPlay" src="water_splatter.mp3"></audio>
+<audio id="soundToPlay" src="water_splatter.mp3" loop></audio>
 
 <script>
     // this portion of js is here, because despite the instructions from the AFrame documentation,
@@ -438,13 +457,6 @@
         // Discard Chrome since it also matches IExplorer & Edge
         if (chromeAgent && IExplorerAgent) chromeAgent = false;
 
-        // console.log(userAgentString)
-        // console.log("Chrome agent: " + chromeAgent)
-        // console.log("IExplorer agent: " + IExplorerAgent)
-        // console.log("Firefox agent: " + firefoxAgent)
-        // console.log("safariAgent: " + safariAgent)
-        // console.log("Opera agent: " + operaAgent)
-
         // return the currently used browser ( the order matter here )
         if (samsungAgent) return "Samsung"
         if (firefoxAgent) return "Firefox"
@@ -457,6 +469,7 @@
 
     function checkforbrowsercompatibility() {
 
+        // checks for chrome on iOS
         if (navigator.userAgent.match('CriOS')) {
             return false
         }
